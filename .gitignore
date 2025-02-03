@@ -576,3 +576,4 @@ cython_debug/
 
 # TTS model files
 src/TTS/models/*/*.pth
+src/TTS/models/*.zip
