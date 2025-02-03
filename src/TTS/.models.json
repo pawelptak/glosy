@@ -941,7 +941,7 @@
         "multilingual": {
             "vctk": {
                 "freevc24": {
-                    "github_rls_url": "modes/voice_conversion_models--multilingual--vctk--freevc24.zip",
+                    "github_rls_url": "https://github.com/coqui-ai/TTS/releases/download/v0.13.0_models/voice_conversion_models--multilingual--vctk--freevc24.zip",
                     "description": "FreeVC model trained on VCTK dataset from https://github.com/OlaWod/FreeVC",
                     "default_vocoder": null,
                     "author": "Jing-Yi Li @OlaWod",
@@ -959,8 +959,8 @@
                 },
                 "openvoice_v1": {
                     "hf_url": [
-                        "models/openvoice_v1/config.json",
-                        "models/openvoice_v1/checkpoint.pth"
+                        "https://huggingface.co/myshell-ai/OpenVoice/resolve/main/checkpoints/converter/config.json",
+                        "https://huggingface.co/myshell-ai/OpenVoice/resolve/main/checkpoints/converter/checkpoint.pth"
                     ],
                     "description": "OpenVoice VC model from https://huggingface.co/myshell-ai/OpenVoiceV2",
                     "default_vocoder": null,
@@ -970,8 +970,8 @@
                 },
                 "openvoice_v2": {
                     "hf_url": [
-                        "models/openvoice_v2/config.json",
-                        "models/openvoice_v2/checkpoint.pth"
+                        "https://huggingface.co/myshell-ai/OpenVoiceV2/resolve/main/converter/config.json",
+                        "https://huggingface.co/myshell-ai/OpenVoiceV2/resolve/main/converter/checkpoint.pth"
                     ],
                     "description": "OpenVoice VC model from https://huggingface.co/myshell-ai/OpenVoiceV2",
                     "default_vocoder": null,

@@ -576,7 +576,7 @@ cython_debug/
 
 # TTS model files
 src/TTS/models/tts/*/*.pth
-src/TTS/models/tts/*.zip
+src/TTS/models/tts/*/*.pt
 
 # Test audio files
 src/test_audio_files/
