@@ -7,7 +7,7 @@ Voice conversion and synthesis web app
     ```
     pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu126
     ```
-
+- Download the `checkpoint.pth` file of the desired model and put it inside the `TTS/models/[model_dir]` directory. URLs to the model files can be found here: https://github.com/idiap/coqui-ai-TTS/blob/dev/TTS/.models.json. For example for the openvoice_v1, the file can be found under https://huggingface.co/myshell-ai/OpenVoice/resolve/main/checkpoints/converter/checkpoint.pth.
 
 ## Credits
 This app is mainly based on https://github.com/idiap/coqui-ai-TTS which is a fork of https://github.com/coqui-ai/TTS.
