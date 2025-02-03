@@ -16,6 +16,8 @@ Voice conversion and synthesis web app
   ```
   pip install -r requirements.txt
   ```
+
+TODO: the line below doesnt work yet
 - Download the `checkpoint.pth` file of the desired model and put it inside the `TTS/models/[model_dir]` directory. URLs to the model files can be found here: https://github.com/idiap/coqui-ai-TTS/blob/dev/TTS/.models.json. For example for the openvoice_v1, the file can be found under https://huggingface.co/myshell-ai/OpenVoice/resolve/main/checkpoints/converter/checkpoint.pth.
 
 ## Credits
