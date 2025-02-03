@@ -1,7 +1,12 @@
 # Glosy
 Voice conversion and synthesis web app
 
-
+## Requirements
+- Python 3.12
+- PyTorch version that matches you CUDA version (more info [here](https://pytorch.org/get-started/locally/)). In my case:
+    ```
+    pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu126
+    ```
 
 
 ## Credits
