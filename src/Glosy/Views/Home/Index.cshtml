@@ -1,0 +1,31 @@
+﻿@model AudioConversionModel
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+
+@*     <form id="app-form" method="post" asp-action="ConvertVoice" asp-controller="Home">
+        <label for="sourceFile">Select Source File:</label>
+        <input type="file" asp-for="SourceFile" accept=".wav" required>
+
+        <label for="targetFile">Select Target File:</label>
+        <input type="file" asp-for="TargetFile" accept=".wav" required>
+        <button type="submit" title="Convert audio file">Convert Voice</button>
+    </form> *@
+
+    @using (Html.BeginForm("ConvertVoice", "Home", FormMethod.Post, new
+    { enctype = "multipart/form-data" }))
+    {
+        @Html.LabelFor(m => m.SourceFile, "Select Source File:")
+        @Html.TextBoxFor(m => m.SourceFile, new { type = "file", required = "required", accept = ".wav" })
+
+        @Html.LabelFor(m => m.TargetFile, "Select Target File:")
+        @Html.TextBoxFor(m => m.TargetFile, new { type = "file", required = "required", accept = ".wav" })
+
+        <button type="submit" title="Convert audio file">Convert Voice</button>
+    }
+</div>
