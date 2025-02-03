@@ -23,9 +23,9 @@ model_name = "voice_conversion_models/multilingual/multi-dataset/openvoice_v1"
 
 tts = TTS(model_name).to(device)
 tts.voice_conversion_to_file(
-  source_wav="ja.wav",
-  target_wav="nr.wav",
-  file_path="testest.wav"
+  source_wav="test_audio_files/ja.wav",
+  target_wav="test_audio_files/nr.wav",
+  file_path="test_audio_files/testest.wav"
 )
 
 
