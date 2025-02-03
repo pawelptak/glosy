@@ -19,5 +19,12 @@ Voice conversion and synthesis web app
 - Edit the environment variables of your system and add a variable named `TTS_HOME` that will contain the absolute path of the `..\glosy\src\TTS\models\` folder (On Windows put the path without any quotes).
 - Download the `checkpoint.pth` file of the desired model and put it inside the `TTS/models/tts/[model_dir]` directory. URLs to the model files can be found here: https://github.com/idiap/coqui-ai-TTS/blob/dev/TTS/.models.json. For example for the openvoice_v1, the file can be found under https://huggingface.co/myshell-ai/OpenVoice/resolve/main/checkpoints/converter/checkpoint.pth.
 
+## Usage
+```
+python conversion.py voice_conversion_models/multilingual/multi-dataset/openvoice_v2 test_audio_files/ja.wav test_audio_files/nr.wav test_audio_files/out.wav
+
+python synthesis.py tts_models/multilingual/multi-dataset/xtts_v2 "Witaj świecie." test_audio_files/ja.wav pl test_audio_files/out.wav
+```
+
 ## Credits
 This app is mainly based on https://github.com/idiap/coqui-ai-TTS which is a fork of https://github.com/coqui-ai/TTS.
