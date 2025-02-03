@@ -575,9 +575,9 @@ cython_debug/
 .pypirc
 
 # TTS model files
-src/TTS/models/tts/*/*.pth
-src/TTS/models/tts/*/*.pt
-src/TTS/models/tts_cache
+src/Glosy/PythonScripts/TTS/models/tts/*/*.pth
+src/Glosy/PythonScripts/TTS/models/tts/*/*.pt
+src/Glosy/PythonScripts/TTS/models/tts_cache
 
 # Test audio files
-src/test_audio_files/
+src/Glosy/PythonScripts/test_audio_files/
