@@ -21,11 +21,11 @@
     { enctype = "multipart/form-data" }))
     {
         @Html.LabelFor(m => m.SourceFile, "Select Source File:")
-        @Html.TextBoxFor(m => m.SourceFile, new { type = "file", required = "required", accept = ".wav" })
+        @Html.TextBoxFor(m => m.SourceFile, new { type = "file", required = "required", accept = ".wav", @class="form-control" })
 
         @Html.LabelFor(m => m.TargetFile, "Select Target File:")
-        @Html.TextBoxFor(m => m.TargetFile, new { type = "file", required = "required", accept = ".wav" })
+        @Html.TextBoxFor(m => m.TargetFile, new { type = "file", required = "required", accept = ".wav", @class = "form-control" })
 
-        <button type="submit" title="Convert audio file">Convert Voice</button>
+        <button class="btn btn-primary" type="submit" title="Convert audio file">Convert Voice</button>
     }
 </div>
