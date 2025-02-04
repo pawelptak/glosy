@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.IO;
 using Glosy.Interfaces;
 using Glosy.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -36,18 +35,19 @@ namespace Glosy.Controllers
         [HttpPost]
         public async Task<ActionResult> ProcessVoice(AudioProcessingModel model)
         {
-            FileStream fileStream = null;
+            var outputFilePath = string.Empty;
 
             if (model.SourceFile != null)
             {
-                fileStream = await _audioProcessingService.ConvertVoiceAsync(model);
+                outputFilePath = await _audioProcessingService.ConvertVoiceAsync(model);
             }
             else if (!string.IsNullOrWhiteSpace(model.TextPrompt))
             {
-                fileStream = await _audioProcessingService.SynthesizeVoiceAsync(model);
+                outputFilePath = await _audioProcessingService.SynthesizeVoiceAsync(model);
+
             }
 
-            return File(fileStream, System.Net.Mime.MediaTypeNames.Application.Octet, "out.wav");
+            return Json(new { audioUrl = outputFilePath });
         }
     }
 }
