@@ -7,6 +7,7 @@ namespace Glosy.Services
     public class AudioProcessingService : IAudioProcessingService
     {
         private readonly string _pythonPath;
+        private readonly string _outputDirectory = @"Multimedia\Output";
 
         public AudioProcessingService(IConfiguration configuration)
         {
@@ -18,21 +19,40 @@ namespace Glosy.Services
             var scriptPath = @"PythonScripts\conversion.py";
             model.ModelName = "voice_conversion_models/multilingual/multi-dataset/openvoice_v2";
 
-            var tempDirectory = @"Multimedia\Output";
-            var sourceFilePath = Path.Combine(tempDirectory, Path.GetRandomFileName() + Path.GetExtension(model.SourceFile.FileName));
+            var sourceFilePath = Path.Combine(_outputDirectory, Path.GetRandomFileName() + Path.GetExtension(model.SourceFile.FileName));
             using (var sourceStream = new FileStream(sourceFilePath, FileMode.Create))
             {
                 await model.SourceFile.CopyToAsync(sourceStream);
             }
 
-            var targetFilePath = Path.Combine(tempDirectory, Path.GetRandomFileName() + Path.GetExtension(model.TargetFile.FileName));
+            var targetFilePath = Path.Combine(_outputDirectory, Path.GetRandomFileName() + Path.GetExtension(model.TargetFile.FileName));
             using (var targetStream = new FileStream(targetFilePath, FileMode.Create))
             {
                 await model.TargetFile.CopyToAsync(targetStream);
             }
 
-            var ouputFilePath = Path.Combine(tempDirectory, "out.wav");
+            var ouputFilePath = Path.Combine(_outputDirectory, "out.wav");
             var arguments = $"{model.ModelName} {sourceFilePath} {targetFilePath} {ouputFilePath}";
+
+            var result = RunPythonScript(_pythonPath, scriptPath, arguments);
+
+            return new FileStream(ouputFilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+        }
+
+        public async Task<FileStream> SynthesizeVoiceAsync(AudioProcessingModel model)
+        {
+            var scriptPath = @"PythonScripts\synthesis.py";
+            model.ModelName = "tts_models/multilingual/multi-dataset/xtts_v2";
+
+            var targetFilePath = Path.Combine(_outputDirectory, Path.GetRandomFileName() + Path.GetExtension(model.TargetFile.FileName));
+            using (var targetStream = new FileStream(targetFilePath, FileMode.Create))
+            {
+                await model.TargetFile.CopyToAsync(targetStream);
+            }
+
+            var ouputFilePath = Path.Combine(_outputDirectory, "out.wav");
+            var language = "pl";
+            var arguments = $"{model.ModelName} \"{model.TextPrompt}\" {targetFilePath} {language} {ouputFilePath}";
 
             var result = RunPythonScript(_pythonPath, scriptPath, arguments);
 
@@ -73,6 +93,5 @@ namespace Glosy.Services
                 return string.Join("\n", output);
             }
         }
-
     }
 }

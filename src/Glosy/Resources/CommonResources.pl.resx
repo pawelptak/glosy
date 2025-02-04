@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="SourceFileLabel" xml:space="preserve">
-    <value>Powiedz</value>
+    <value>Co mam powiedzieć?</value>
   </data>
   <data name="SubmitButtonText" xml:space="preserve">
     <value>Rozpocznij</value>
@@ -127,7 +127,7 @@
     <value>Rozpocznij konwersję</value>
   </data>
   <data name="TargetFileLabel" xml:space="preserve">
-    <value>Jak mam powiedzieć?</value>
+    <value>Jakim głosem mam powiedzieć?</value>
   </data>
   <data name="TextPromptPlaceholder" xml:space="preserve">
     <value>Co mam powiedzieć?</value>
