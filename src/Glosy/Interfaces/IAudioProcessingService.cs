@@ -4,6 +4,6 @@ namespace Glosy.Interfaces
 {
     public interface IAudioProcessingService
     {
-        Task<FileStream> ConvertVoiceAsync(AudioConversionModel model);
+        Task<FileStream> ConvertVoiceAsync(AudioProcessingModel model);
     }
 }

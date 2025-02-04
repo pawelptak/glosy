@@ -13,7 +13,7 @@ namespace Glosy.Services
                 _pythonPath = configuration["Config:PythonPath"];
         }
 
-        public async Task<FileStream> ConvertVoiceAsync(AudioConversionModel model)
+        public async Task<FileStream> ConvertVoiceAsync(AudioProcessingModel model)
         {
             var scriptPath = @"PythonScripts\conversion.py";
             model.ModelName = "voice_conversion_models/multilingual/multi-dataset/openvoice_v2";

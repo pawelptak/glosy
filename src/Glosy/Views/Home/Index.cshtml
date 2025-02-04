@@ -1,4 +1,4 @@
-﻿@model AudioConversionModel
+﻿@model AudioProcessingModel
 
 @{
     ViewData["Title"] = "Home Page";
@@ -7,15 +7,18 @@
 <div class="container">
     <h1 class="display-4 mb-5">Glosy</h1>
 
-    @using (Html.BeginForm("ConvertVoice", "Home", FormMethod.Post, new
+    @using (Html.BeginForm("ProcessVoice", "Home", FormMethod.Post, new
     { enctype = "multipart/form-data" }))
     {
         <div class="d-grid gap-3">
 
             <div>
-                @Html.LabelFor(m => m.SourceFile, "Source voice:")
-                @Html.TextBoxFor(m => m.SourceFile, new { type = "file", required = "required", accept = ".wav", @class = "form-control mb-3", id = "sourceFile" })
+                @Html.LabelFor(m => m.SourceFile, "Say:")
+                @Html.TextBoxFor(m => m.SourceFile, new { type = "file", accept = ".wav", @class = "form-control mb-3", id = "sourceFile" })
                 <div id="sourceAudioPreview" class="audio-preview"></div>
+                <p>OR</p>
+                @Html.TextAreaFor(m => m.TextPrompt, new { type = "file", accept = ".wav", @class = "form-control mb-3", @placeholder="Write what it should say..." , id="textPromptArea"})
+
             </div>
 
             <div>
