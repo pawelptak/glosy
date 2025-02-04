@@ -6,12 +6,19 @@ namespace Glosy.Services
 {
     public class AudioProcessingService : IAudioProcessingService
     {
+        private readonly string _pythonPath;
+
+        public AudioProcessingService(IConfiguration configuration)
+        {
+                _pythonPath = configuration["Config:PythonPath"];
+        }
+
         public async Task<FileStream> ConvertVoiceAsync(AudioConversionModel model)
         {
-            var scriptPath = @"P:\\Projects\\glosy\\src\\Glosy\\PythonScripts\\conversion.py";
+            var scriptPath = @"PythonScripts\conversion.py";
             model.ModelName = "voice_conversion_models/multilingual/multi-dataset/openvoice_v2";
 
-            var tempDirectory = @"P:\\Projects\\glosy\\src\\Glosy\\Multimedia\\Output\\";
+            var tempDirectory = @"Multimedia\Output";
             var sourceFilePath = Path.Combine(tempDirectory, Path.GetRandomFileName() + Path.GetExtension(model.SourceFile.FileName));
             using (var sourceStream = new FileStream(sourceFilePath, FileMode.Create))
             {
@@ -27,16 +34,16 @@ namespace Glosy.Services
             var ouputFilePath = Path.Combine(tempDirectory, "out.wav");
             var arguments = $"{model.ModelName} {sourceFilePath} {targetFilePath} {ouputFilePath}";
 
-            RunPythonScript(scriptPath, arguments);
+            var result = RunPythonScript(_pythonPath, scriptPath, arguments);
 
             return new FileStream(ouputFilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
         }
 
-        private static void RunPythonScript(string scriptPath, string arguments)
+        private static string RunPythonScript(string pythonPath, string scriptPath, string arguments)
         {
             ProcessStartInfo psi = new ProcessStartInfo
             {
-                FileName = "python", // Make sure "python" is in PATH, or use full path e.g. "C:\\Python\\python.exe"
+                FileName = pythonPath,
                 Arguments = $"{scriptPath} {arguments}",
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
@@ -46,14 +53,26 @@ namespace Glosy.Services
 
             using (Process process = new Process { StartInfo = psi })
             {
-                process.OutputDataReceived += (sender, e) => Console.WriteLine(e.Data);
-                process.ErrorDataReceived += (sender, e) => Console.WriteLine($"ERROR: {e.Data}");
+                var output = new List<string>();
+                var errors = new List<string>();
+
+                process.OutputDataReceived += (sender, e) => { if (e.Data != null) output.Add(e.Data); };
+                process.ErrorDataReceived += (sender, e) => { if (e.Data != null) errors.Add(e.Data); };
 
                 process.Start();
                 process.BeginOutputReadLine();
                 process.BeginErrorReadLine();
+
                 process.WaitForExit();
+
+                if (errors.Count > 0)
+                {
+                    throw new Exception($"Python script encountered errors:\n{string.Join("\n", errors)}");
+                }
+
+                return string.Join("\n", output);
             }
         }
+
     }
 }
