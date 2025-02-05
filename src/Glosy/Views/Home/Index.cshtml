@@ -16,6 +16,12 @@
         <div class="d-grid gap-3">
 
             <div>
+                <div>
+                    <button id="startRecording" class="btn btn-outline-secondary" type="button">Start Recording</button>
+                    <button id="stopRecording" class="btn btn-outline-secondary" disabled type="button">Stop Recording</button>
+                    <audio id="recordedAudio" controls></audio>
+                </div>
+
                 @Html.LabelFor(m => m.SourceFile, @Localizer.GetString("SourceFileLabel"))
                 <div class="input-container">
                     <div class="input-group">
@@ -155,3 +161,65 @@
         margin-bottom: 10px;
     }
 </style>
+
+<script>
+    let mediaRecorder;
+    let audioChunks = [];
+    let audioBlob;
+    let audioURL;
+    let audio = document.getElementById("recordedAudio");
+
+    // Enable the start/stop buttons
+    document.getElementById("startRecording").addEventListener("click", startRecording);
+    document.getElementById("stopRecording").addEventListener("click", stopRecording);
+
+    // Start recording
+    async function startRecording() {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+
+        mediaRecorder.ondataavailable = event => {
+            audioChunks.push(event.data);
+        };
+
+        mediaRecorder.onstop = () => {
+            audioBlob = new Blob(audioChunks, { type: "audio/webm" });
+            audioURL = URL.createObjectURL(audioBlob);
+            audio.src = audioURL;
+            document.getElementById("stopRecording").disabled = true;
+            document.getElementById("startRecording").disabled = false;
+
+            const fileInput = document.getElementById("sourceFile");
+            const file = new File([audioBlob], "recorded.wav", { type: "audio/webm" });
+
+            // Set the recorded audio to the file input
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            fileInput.files = dataTransfer.files;
+
+            document.getElementById("stopRecording").disabled = true;
+            document.getElementById("startRecording").disabled = false;
+        };
+
+        mediaRecorder.start();
+        document.getElementById("stopRecording").disabled = false;
+        document.getElementById("startRecording").disabled = true;
+    }
+
+    // Stop recording
+    function stopRecording() {
+        mediaRecorder.stop();
+
+        // // Create a temporary File object and trigger file input
+        // const fileInput = document.createElement("input");
+        // fileInput.type = "file";
+        // fileInput.name = "SourceFile";
+        // fileInput.files = [new File([audioBlob], "recorded.wav", { type: "audio/wav" })];
+
+        // // Trigger the file input change to submit it
+        // const form = document.querySelector("form");
+        // form.appendChild(fileInput);  // Append to form so it can be submitted
+    }
+
+
+</script>
