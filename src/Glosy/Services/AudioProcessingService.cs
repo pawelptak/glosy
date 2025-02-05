@@ -1,4 +1,5 @@
-﻿using Glosy.Interfaces;
+﻿using Glosy.Constants;
+using Glosy.Interfaces;
 using Glosy.Models;
 using System.Diagnostics;
 
@@ -43,7 +44,7 @@ namespace Glosy.Services
             var sourceFilePath = Path.Combine(_tempFilesDirectory, model.SourceFile.FileName);
             await SaveStreamToDrive(sourceFilePath, model.SourceFile);
 
-            if (string.Equals(model.SourceFile.ContentType, "audio/webm")) // Audio recorded using microphone has to be converted to mp4, otherwise it doesn't work idk why
+            if (string.Equals(model.SourceFile.ContentType, AudioConstants.RecordingMimeType)) // Audio recorded using microphone has to be converted to mp4, otherwise it doesn't work idk why
             {
                 var convertedFilePath = Path.Combine(Path.GetDirectoryName(sourceFilePath), outputFileName);
                 await ConvertToWavAsync(sourceFilePath, convertedFilePath);

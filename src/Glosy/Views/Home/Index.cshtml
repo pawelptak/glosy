@@ -1,5 +1,6 @@
 ﻿@using Glosy.Resources
 @using Microsoft.Extensions.Localization
+﻿@using Glosy.Constants;
 @model AudioProcessingModel
 @inject IStringLocalizer<CommonResources> Localizer
 
@@ -183,7 +184,7 @@
             audioChunks.push(event.data);
         };
 
-        const audioMimeType = "audio/webm"
+        const audioMimeType = '@AudioConstants.RecordingMimeType';
         mediaRecorder.start();
         document.getElementById("stopRecording").disabled = false;
         document.getElementById("startRecording").disabled = true;
