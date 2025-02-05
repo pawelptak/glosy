@@ -107,19 +107,11 @@
 </script>
 
 <script>
-    function toggleBusyIndicatorVisibility(show){
-        const busyElement = document.getElementById("loadingIndicator");
-        if (show){
-            busyElement.style.display = "block";
-        }else{
-            busyElement.style.display = "none";;
-        }
-    }
-
         document.querySelector("form").addEventListener("submit", function(event) {
         event.preventDefault();
 
-        toggleBusyIndicatorVisibility(true);
+        $("#loadingIndicator").show();
+        $("#outputAudioPreview").hide();
 
         var formData = new FormData(this);
 
@@ -129,7 +121,7 @@
         })
         .then(response => response.json())
         .then(data => {
-            toggleBusyIndicatorVisibility(false);
+            $("#loadingIndicator").hide();
 
             if (data.audioUrl) {
                 var preview = document.getElementById("outputAudioPreview");
@@ -139,10 +131,11 @@
                 audio.controls = true;
                 audio.src = data.audioUrl;
                 preview.appendChild(audio);
+                $("#outputAudioPreview").show();
             }
         })
         .catch(error => {
-            toggleBusyIndicatorVisibility(false);
+            $("#loadingIndicator").hide();
             console.error("Error:", error)
         });
     });
