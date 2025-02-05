@@ -7,11 +7,13 @@ namespace Glosy.Services
     public class AudioProcessingService : IAudioProcessingService
     {
         private readonly string _pythonPath;
+        private readonly string _ffmpegPath;
         private readonly string _outputDirectory = @"Multimedia";
 
         public AudioProcessingService(IConfiguration configuration)
         {
-                _pythonPath = configuration["Config:PythonPath"];
+            _pythonPath = configuration["Config:PythonPath"];
+            _ffmpegPath = configuration["Config:FFmpegPath"];
         }
 
         public async Task<string> ConvertVoiceAsync(AudioProcessingModel model)
@@ -28,15 +30,11 @@ namespace Glosy.Services
             if (model.SourceFile.ContentType == "audio/webm")
             {
                 var convertedFileName = "pies.wav";
- 
-                ConvertWebmToWav(sourceFilePath, Path.Combine(Path.GetDirectoryName(sourceFilePath), convertedFileName));
+                var convertedFilePath = Path.Combine(Path.GetDirectoryName(sourceFilePath), convertedFileName);
+                ConvertWebmToWav(sourceFilePath, convertedFilePath);
 
-                sourceFilePath = convertedFileName;
+                sourceFilePath = convertedFilePath;
             }
-
-            //var convertedFileName2 = "pies.wav";
-            //await ConvertWebmToWav(sourceFilePath, Path.Combine(Path.GetDirectoryName(sourceFilePath), convertedFileName2));
-
 
             var targetFilePath = Path.Combine(_outputDirectory, Path.GetRandomFileName() + Path.GetExtension(model.TargetFile.FileName));
             using (var targetStream = new FileStream(targetFilePath, FileMode.Create))
@@ -46,7 +44,7 @@ namespace Glosy.Services
 
             var outputFilePath = Path.Combine("generated", "out.wav");
             var fullOutputFilePath = Path.Combine("wwwroot", outputFilePath);
-            Directory.CreateDirectory(Path.GetDirectoryName(outputFilePath));
+            Directory.CreateDirectory(Path.GetDirectoryName(fullOutputFilePath));
 
             var arguments = $"{model.ModelName} {sourceFilePath} {targetFilePath} {fullOutputFilePath}";
 
@@ -68,7 +66,7 @@ namespace Glosy.Services
 
             var outputFilePath = Path.Combine("generated", "out.wav");
             var fullOutputFilePath = Path.Combine("wwwroot", outputFilePath);
-            Directory.CreateDirectory(Path.GetDirectoryName(outputFilePath));
+            Directory.CreateDirectory(Path.GetDirectoryName(fullOutputFilePath));
 
             var language = "pl";
             var arguments = $"{model.ModelName} \"{model.TextPrompt}\" {targetFilePath} {language} {fullOutputFilePath}";
@@ -117,8 +115,8 @@ namespace Glosy.Services
         {
             ProcessStartInfo psi = new ProcessStartInfo
             {
-                FileName = "ffmpeg", // TODO: get path from appsettings
-                Arguments = $"-i {inputPath} {outputPath}",
+                FileName = _ffmpegPath,
+                Arguments = $"-y -i {inputPath} {outputPath}",
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 //UseShellExecute = false,
