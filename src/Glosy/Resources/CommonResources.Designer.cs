@@ -61,6 +61,15 @@ namespace Glosy.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Processing....
+        /// </summary>
+        internal static string BusyIndicatorText {
+            get {
+                return ResourceManager.GetString("BusyIndicatorText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Say.
         /// </summary>
         internal static string SourceFileLabel {

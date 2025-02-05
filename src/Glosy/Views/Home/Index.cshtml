@@ -54,6 +54,13 @@
 
             <button class="btn btn-primary" type="submit" title="@Localizer.GetString("SubmitButtonTitle")">@Localizer.GetString("SubmitButtonText")</button>
             <div id="outputAudioPreview" class="audio-preview"></div>
+
+            <div id="loadingIndicator" class="text-center" style="display: none;">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">@Localizer.GetString("BusyIndicatorText")</span>
+                </div>
+                <p>@Localizer.GetString("BusyIndicatorText")</p>
+            </div>
         </div>
     }
 
@@ -100,8 +107,19 @@
 </script>
 
 <script>
+    function toggleBusyIndicatorVisibility(show){
+        const busyElement = document.getElementById("loadingIndicator");
+        if (show){
+            busyElement.style.display = "block";
+        }else{
+            busyElement.style.display = "none";;
+        }
+    }
+
         document.querySelector("form").addEventListener("submit", function(event) {
         event.preventDefault();
+
+        toggleBusyIndicatorVisibility(true);
 
         var formData = new FormData(this);
 
@@ -111,6 +129,8 @@
         })
         .then(response => response.json())
         .then(data => {
+            toggleBusyIndicatorVisibility(false);
+
             if (data.audioUrl) {
                 var preview = document.getElementById("outputAudioPreview");
                 preview.innerHTML = '';
@@ -121,7 +141,10 @@
                 preview.appendChild(audio);
             }
         })
-        .catch(error => console.error("Error:", error));
+        .catch(error => {
+            toggleBusyIndicatorVisibility(false);
+            console.error("Error:", error)
+        });
     });
 </script>
 
@@ -170,21 +193,20 @@
     let audioURL;
     let audio = document.getElementById("recordedAudio");
 
-    // Enable the start/stop buttons
     document.getElementById("startRecording").addEventListener("click", startRecording);
     document.getElementById("stopRecording").addEventListener("click", stopRecording);
 
-    // Start recording
     async function startRecording() {
         audioChunks = []
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const audioMimeType = '@AudioConstants.RecordingMimeType';
+
         mediaRecorder = new MediaRecorder(stream);
 
         mediaRecorder.ondataavailable = event => {
             audioChunks.push(event.data);
         };
 
-        const audioMimeType = '@AudioConstants.RecordingMimeType';
         mediaRecorder.start();
         document.getElementById("stopRecording").disabled = false;
         document.getElementById("startRecording").disabled = true;
