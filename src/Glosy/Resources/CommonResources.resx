@@ -120,8 +120,20 @@
   <data name="BusyIndicatorText" xml:space="preserve">
     <value>Processing...</value>
   </data>
+  <data name="OutputFileLabel" xml:space="preserve">
+    <value>Result</value>
+  </data>
+  <data name="RecordingLabel" xml:space="preserve">
+    <value>Record</value>
+  </data>
   <data name="SourceFileLabel" xml:space="preserve">
     <value>Say</value>
+  </data>
+  <data name="StartRecordingText" xml:space="preserve">
+    <value>Start</value>
+  </data>
+  <data name="StopRecordingText" xml:space="preserve">
+    <value>Stop</value>
   </data>
   <data name="SubmitButtonText" xml:space="preserve">
     <value>Start processing</value>
@@ -132,7 +144,13 @@
   <data name="TargetFileLabel" xml:space="preserve">
     <value>Make it sound like</value>
   </data>
+  <data name="TextPromptLabel" xml:space="preserve">
+    <value>Or write</value>
+  </data>
   <data name="TextPromptPlaceholder" xml:space="preserve">
     <value>Write what I should say...</value>
+  </data>
+  <data name="UploadSourceAudioLabel" xml:space="preserve">
+    <value>Or upload an audio file</value>
   </data>
 </root>

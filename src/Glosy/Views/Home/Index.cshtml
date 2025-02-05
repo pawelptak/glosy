@@ -17,43 +17,56 @@
         <div class="d-grid gap-3">
 
             <div>
-                <div>
-                    <button id="startRecording" class="btn btn-outline-secondary" type="button">Start Recording</button>
-                    <button id="stopRecording" class="btn btn-outline-secondary" disabled type="button">Stop Recording</button>
-                    <audio id="recordedAudio" controls style="display: none;"></audio>
-                </div>
-
-                @Html.LabelFor(m => m.SourceFile, @Localizer.GetString("SourceFileLabel"))
-                <div class="input-container">
-                    <div class="input-group">
-                        @Html.TextBoxFor(m => m.SourceFile, new { type = "file", accept = ".wav", @class = "form-control custom-file-input", id = "sourceFile" })
-                        <button class="btn btn-outline-secondary clear-file-input" id="clearRecodringButton" type="button">
-                            <i class="bi bi-trash"></i>
+                @Html.LabelFor(m => m.SourceFile, @Localizer.GetString("SourceFileLabel"), new { @class = "h5 mb-3" })
+                <div class="mb-3">
+                    <label>@Localizer.GetString("RecordingLabel")</label>
+                    <div>
+                        <button id="startRecording" class="btn btn-outline-secondary" type="button">
+                            <i class="bi bi-record-fill" style="color: #d44054"></i>
+                            @Localizer.GetString("StartRecordingText")
+                        </button>
+                        <button id="stopRecording" class="btn btn-outline-secondary" disabled type="button">
+                            <i class="bi bi-stop-fill"></i>
+                            @Localizer.GetString("StopRecordingText")
                         </button>
                     </div>
-                    <div id="sourceAudioPreview" class="audio-preview"></div>
                 </div>
 
-                <p>OR</p>
-                @Html.TextAreaFor(m => m.TextPrompt, new { type = "file", accept = ".wav", @class = "form-control mb-3", @placeholder = @Localizer.GetString("TextPromptPlaceholder"), id = "textPromptArea" })
+                <div class="mb-3">
+                    <label>@Localizer.GetString("UploadSourceAudioLabel")</label>
+                    <div class="input-container">
+                        <div class="input-group mb-2">
+                            @Html.TextBoxFor(m => m.SourceFile, new { type = "file", accept = ".wav", @class = "form-control custom-file-input", id = "sourceFile" })
+                            <button class="btn btn-outline-secondary clear-file-input" id="clearRecodringButton" type="button">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                        <audio id="sourceAudioPreview" class="audio-preview" controls style="display: none;"></audio>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label>@Localizer.GetString("TextPromptLabel")</label>
+                    @Html.TextAreaFor(m => m.TextPrompt, new { type = "file", accept = ".wav", @class = "form-control mb-3", @placeholder = @Localizer.GetString("TextPromptPlaceholder"), id = "textPromptArea" })
+                </div>
 
             </div>
 
-            <div>
-                @Html.LabelFor(m => m.TargetFile, @Localizer.GetString("TargetFileLabel"))
+            <div class="mb-3">
+                @Html.LabelFor(m => m.TargetFile, @Localizer.GetString("TargetFileLabel"), new { @class = "h5 mb-3" })
                 <div class="input-container">
-                    <div class="input-group">
+                    <div class="input-group mb-2">
                         @Html.TextBoxFor(m => m.TargetFile, new { type = "file", required = "required", accept = ".wav", @class = "form-control", id = "targetFile" })
                         <button class="btn btn-outline-secondary clear-file-input" type="button">
                             <i class="bi bi-trash"></i>
                         </button>
                     </div>
-                    <div id="targetAudioPreview" class="audio-preview"></div>
+                    <audio id="targetAudioPreview" class="audio-preview" controls style="display: none;"></audio>
                 </div>
             </div>
 
-            <button class="btn btn-primary" type="submit" title="@Localizer.GetString("SubmitButtonTitle")">@Localizer.GetString("SubmitButtonText")</button>
-            <div id="outputAudioPreview" class="audio-preview"></div>
+
+            <button class="btn btn-primary mb-3" type="submit" title="@Localizer.GetString("SubmitButtonTitle")">@Localizer.GetString("SubmitButtonText")</button>
 
             <div id="loadingIndicator" class="text-center" style="display: none;">
                 <div class="spinner-border" role="status">
@@ -61,6 +74,12 @@
                 </div>
                 <p>@Localizer.GetString("BusyIndicatorText")</p>
             </div>
+
+            <div id="resultContainer" style="display: none;">
+                @Html.LabelFor(m => m.OutputFile, @Localizer.GetString("OutputFileLabel"), new { @class = "h5 mb-3" })
+                <div id="outputAudioPreview"></div>
+            </div>
+
         </div>
     }
 
@@ -69,17 +88,18 @@
 <script>
     function createAudioPreview(inputId, previewId) {
         var input = document.getElementById(inputId);
-        var preview = document.getElementById(previewId);
+        var preview = $("#" + previewId);
 
         input.addEventListener("change", function() {
             var file = input.files[0];
             if (file) {
-                var audio = document.createElement("audio");
-                audio.controls = true;
+                //var audio = document.createElement("audio");
+                // audio.controls = true;
                 var objectURL = URL.createObjectURL(file);
-                audio.src = objectURL;
-                preview.innerHTML = '';
-                preview.appendChild(audio);
+                preview.attr('src', objectURL);
+                preview.show();
+                // preview.innerHTML = '';
+                // preview.appendChild(audio);
             }
         });
     }
@@ -98,17 +118,11 @@
 
             const audioPreview = this.closest('.input-container').querySelector('.audio-preview');
             if (audioPreview) {
-                audioPreview.remove();
+                audioPreview.style.display = "none";
             }
 
             toggleTextPromptInput();
         });
-    });
-
-    $("#clearRecodringButton").click(function() {
-        if($("#recordedAudio").is(":visible")) {
-            $("#recordedAudio").hide();
-        }
     });
 </script>
 
@@ -117,7 +131,7 @@
         event.preventDefault();
 
         $("#loadingIndicator").show();
-        $("#outputAudioPreview").hide();
+        $("#resultContainer").hide();
 
         var formData = new FormData(this);
 
@@ -137,7 +151,7 @@
                 audio.controls = true;
                 audio.src = data.audioUrl;
                 preview.appendChild(audio);
-                $("#outputAudioPreview").show();
+                $("#resultContainer").show();
             }
         })
         .catch(error => {
@@ -190,7 +204,7 @@
     let audioChunks = [];
     let audioBlob;
     let audioURL;
-    let audio = document.getElementById("recordedAudio");
+    let audio = document.getElementById("sourceAudioPreview");
 
     document.getElementById("startRecording").addEventListener("click", startRecording);
     document.getElementById("stopRecording").addEventListener("click", stopRecording);
@@ -227,11 +241,12 @@
 
             document.getElementById("stopRecording").disabled = true;
             document.getElementById("startRecording").disabled = false;
+            document.getElementById("textPromptArea").disabled = true;
         };
     }
 
     function stopRecording() {
         mediaRecorder.stop();
-        $("#recordedAudio").show();
+        $("#sourceAudioPreview").show();
     }
 </script>

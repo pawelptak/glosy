@@ -120,8 +120,20 @@
   <data name="BusyIndicatorText" xml:space="preserve">
     <value>Dzieją się rzeczy...</value>
   </data>
+  <data name="OutputFileLabel" xml:space="preserve">
+    <value>Wynik</value>
+  </data>
+  <data name="RecordingLabel" xml:space="preserve">
+    <value>Nagraj</value>
+  </data>
   <data name="SourceFileLabel" xml:space="preserve">
     <value>Co mam powiedzieć?</value>
+  </data>
+  <data name="StartRecordingText" xml:space="preserve">
+    <value>Start</value>
+  </data>
+  <data name="StopRecordingText" xml:space="preserve">
+    <value>Stop</value>
   </data>
   <data name="SubmitButtonText" xml:space="preserve">
     <value>Rozpocznij</value>
@@ -132,7 +144,13 @@
   <data name="TargetFileLabel" xml:space="preserve">
     <value>Jakim głosem mam powiedzieć?</value>
   </data>
+  <data name="TextPromptLabel" xml:space="preserve">
+    <value>Lub napisz</value>
+  </data>
   <data name="TextPromptPlaceholder" xml:space="preserve">
     <value>Co mam powiedzieć?</value>
+  </data>
+  <data name="UploadSourceAudioLabel" xml:space="preserve">
+    <value>Lub wybierz plik audio</value>
   </data>
 </root>
