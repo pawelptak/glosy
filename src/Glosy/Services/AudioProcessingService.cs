@@ -25,6 +25,19 @@ namespace Glosy.Services
                 await model.SourceFile.CopyToAsync(sourceStream);
             }
 
+            if (model.SourceFile.ContentType == "audio/webm")
+            {
+                var convertedFileName = "pies.wav";
+ 
+                ConvertWebmToWav(sourceFilePath, Path.Combine(Path.GetDirectoryName(sourceFilePath), convertedFileName));
+
+                sourceFilePath = convertedFileName;
+            }
+
+            //var convertedFileName2 = "pies.wav";
+            //await ConvertWebmToWav(sourceFilePath, Path.Combine(Path.GetDirectoryName(sourceFilePath), convertedFileName2));
+
+
             var targetFilePath = Path.Combine(_outputDirectory, Path.GetRandomFileName() + Path.GetExtension(model.TargetFile.FileName));
             using (var targetStream = new FileStream(targetFilePath, FileMode.Create))
             {
@@ -97,6 +110,43 @@ namespace Glosy.Services
                 }
 
                 return string.Join("\n", output);
+            }
+        }
+
+        private void ConvertWebmToWav(string inputPath, string outputPath)
+        {
+            ProcessStartInfo psi = new ProcessStartInfo
+            {
+                FileName = "ffmpeg", // TODO: get path from appsettings
+                Arguments = $"-i {inputPath} {outputPath}",
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                //UseShellExecute = false,
+                //CreateNoWindow = true
+            };
+
+            using (Process ff = new Process { StartInfo = psi })
+            {
+                var output = new List<string>();
+                var errors = new List<string>();
+
+                ff.OutputDataReceived += (sender, e) => { if (e.Data != null) output.Add(e.Data); };
+                ff.ErrorDataReceived += (sender, e) => { if (e.Data != null) errors.Add(e.Data); };
+
+                ff.Start();
+                //ff.BeginOutputReadLine();
+                //ff.BeginErrorReadLine();
+
+                ff.WaitForExit();
+
+                foreach (var line in output)
+                {
+                    Console.WriteLine(line);
+                }
+                //if (errors.Count > 0)
+                //{
+                //    throw new Exception($"Ffmpeg encountered errors:\n{string.Join("\n", errors)}");
+                //}
             }
         }
     }
