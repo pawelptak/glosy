@@ -583,3 +583,5 @@ src/Glosy/Multimedia/*.wav
 
 # Output audio files
 src/Glosy/wwwroot/generated
+
+src/Glosy/Utilities/*.exe
