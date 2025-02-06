@@ -70,11 +70,47 @@ namespace Glosy.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Result.
+        /// </summary>
+        internal static string OutputFileLabel {
+            get {
+                return ResourceManager.GetString("OutputFileLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Record.
+        /// </summary>
+        internal static string RecordingLabel {
+            get {
+                return ResourceManager.GetString("RecordingLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Say.
         /// </summary>
         internal static string SourceFileLabel {
             get {
                 return ResourceManager.GetString("SourceFileLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start.
+        /// </summary>
+        internal static string StartRecordingText {
+            get {
+                return ResourceManager.GetString("StartRecordingText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stop.
+        /// </summary>
+        internal static string StopRecordingText {
+            get {
+                return ResourceManager.GetString("StopRecordingText", resourceCulture);
             }
         }
         
@@ -106,11 +142,29 @@ namespace Glosy.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Or write.
+        /// </summary>
+        internal static string TextPromptLabel {
+            get {
+                return ResourceManager.GetString("TextPromptLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Write what I should say....
         /// </summary>
         internal static string TextPromptPlaceholder {
             get {
                 return ResourceManager.GetString("TextPromptPlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Or upload an audio file.
+        /// </summary>
+        internal static string UploadSourceAudioLabel {
+            get {
+                return ResourceManager.GetString("UploadSourceAudioLabel", resourceCulture);
             }
         }
     }

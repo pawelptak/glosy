@@ -2,6 +2,6 @@
 {
     public static class AudioConstants
     {
-        public const string RecordingMimeType = "audio/webm";
+        public const string RecordingMimeType = "video/mp4";
     }
 }
