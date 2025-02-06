@@ -162,9 +162,9 @@ namespace Glosy.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Or upload an audio file.
         /// </summary>
-        internal static string UploadSourceAudioLabel {
+        internal static string UploadAudioLabel {
             get {
-                return ResourceManager.GetString("UploadSourceAudioLabel", resourceCulture);
+                return ResourceManager.GetString("UploadAudioLabel", resourceCulture);
             }
         }
     }
