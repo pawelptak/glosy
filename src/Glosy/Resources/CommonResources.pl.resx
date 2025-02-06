@@ -150,7 +150,7 @@
   <data name="TextPromptPlaceholder" xml:space="preserve">
     <value>Co mam powiedzieć?</value>
   </data>
-  <data name="UploadSourceAudioLabel" xml:space="preserve">
+  <data name="UploadAudioLabel" xml:space="preserve">
     <value>Lub wybierz plik audio</value>
   </data>
 </root>
