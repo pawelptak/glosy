@@ -21,11 +21,11 @@
                 <div class="mb-3">
                     <label>@Localizer.GetString("RecordingLabel")</label>
                     <div>
-                        <button id="startRecording" class="btn btn-outline-secondary" type="button">
+                        <button id="startRecordingSource" class="btn btn-outline-secondary" type="button">
                             <i class="bi bi-record-fill" style="color: #d44054"></i>
                             @Localizer.GetString("StartRecordingText")
                         </button>
-                        <button id="stopRecording" class="btn btn-outline-secondary" disabled type="button">
+                        <button id="stopRecordingSource" class="btn btn-outline-secondary" disabled type="button">
                             <i class="bi bi-stop-fill"></i>
                             @Localizer.GetString("StopRecordingText")
                         </button>
@@ -221,99 +221,68 @@
 </style>
 
 <script>
-    let sourceMediaRecorder;
+    let mediaRecorders = {};
 
-    document.getElementById("startRecording").addEventListener("click", startRecording);
-    document.getElementById("stopRecording").addEventListener("click", stopRecording);
-
-    async function startRecording() {
+    async function startRecording(recorderId, startButtonId, stopButtonId, audioPreviewId, audioFileInputId, recordingName){
         let audioChunks = []
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         const audioMimeType = '@AudioConstants.RecordingMimeType';
 
-        sourceMediaRecorder = new MediaRecorder(stream);
-
-        sourceMediaRecorder.ondataavailable = event => {
-            audioChunks.push(event.data);
-        };
-
-        sourceMediaRecorder.start();
-        document.getElementById("stopRecording").disabled = false;
-        document.getElementById("startRecording").disabled = true;
-
-        sourceMediaRecorder.onstop = () => {
-            let audioBlob = new Blob(audioChunks, { type: audioMimeType });
-            let audioURL = URL.createObjectURL(audioBlob);
-            let audio = document.getElementById("sourceAudioPreview");
-
-            audio.src = audioURL;
-
-            document.getElementById("stopRecording").disabled = true;
-            document.getElementById("startRecording").disabled = false;
-
-            const fileInput = document.getElementById("sourceFile");
-            const file = new File([audioBlob], "source.wav", { type: audioMimeType });
-
-            const dataTransfer = new DataTransfer();
-            dataTransfer.items.add(file);
-            fileInput.files = dataTransfer.files;
-
-            document.getElementById("stopRecording").disabled = true;
-            document.getElementById("startRecording").disabled = false;
-            document.getElementById("textPromptArea").disabled = true;
-        };
-    }
-
-    function stopRecording() {
-        sourceMediaRecorder.stop();
-        $("#sourceAudioPreview").show();
-    }
-</script>
-
-<script>
-    let targetMediaRecorder;
-
-    document.getElementById("startRecordingTarget").addEventListener("click", startRecording);
-    document.getElementById("stopRecordingTarget").addEventListener("click", stopRecording);
-
-    async function startRecording() {
-        let audioChunks = []
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        const audioMimeType = '@AudioConstants.RecordingMimeType';
-
-        mediaRecorder = new MediaRecorder(stream);
+        const mediaRecorder = new MediaRecorder(stream);
+        mediaRecorders[recorderId] = mediaRecorder;
 
         mediaRecorder.ondataavailable = event => {
             audioChunks.push(event.data);
         };
 
         mediaRecorder.start();
-        document.getElementById("stopRecordingTarget").disabled = false;
-        document.getElementById("startRecordingTarget").disabled = true;
+        document.getElementById(stopButtonId).disabled = false;
+        document.getElementById(startButtonId).disabled = true;
 
         mediaRecorder.onstop = () => {
             let audioBlob = new Blob(audioChunks, { type: audioMimeType });
             let audioURL = URL.createObjectURL(audioBlob);
-            let audio = document.getElementById("targetAudioPreview");
+            let audio = document.getElementById(audioPreviewId);
             audio.src = audioURL;
 
-            document.getElementById("stopRecordingTarget").disabled = true;
-            document.getElementById("startRecordingTarget").disabled = false;
+            document.getElementById(stopButtonId).disabled = true;
+            document.getElementById(startButtonId).disabled = false;
 
-            const fileInput = document.getElementById("targetFile");
-            const file = new File([audioBlob], "target.wav", { type: audioMimeType });
+            const fileInput = document.getElementById(audioFileInputId);
+            const file = new File([audioBlob], recordingName, { type: audioMimeType });
 
             const dataTransfer = new DataTransfer();
             dataTransfer.items.add(file);
             fileInput.files = dataTransfer.files;
 
-            document.getElementById("stopRecordingTarget").disabled = true;
-            document.getElementById("startRecordingTarget").disabled = false;
+            document.getElementById(stopButtonId).disabled = true;
+            document.getElementById(startButtonId).disabled = false;
         };
     }
 
-    function stopRecording() {
-        mediaRecorder.stop();
-        $("#targetAudioPreview").show();
+    function stopRecording(recorderId, audioPreviewId) {
+        if (mediaRecorders[recorderId]){
+            mediaRecorders[recorderId].stop();
+            delete mediaRecorders[recorderId];
+            $('#' + audioPreviewId).show();
+        }
     }
+
+
+    const startSourceRecordingButtonId = "startRecordingSource";
+    const stopSourceRecordingButtonId = "stopRecordingSource";
+    const sourcePreviewId = "sourceAudioPreview";
+    const sourceInputId = "sourceFile";
+
+    document.getElementById(startSourceRecordingButtonId).addEventListener("click", () => startRecording("source", startSourceRecordingButtonId, stopSourceRecordingButtonId, sourcePreviewId, sourceInputId, "source.wav"));
+    document.getElementById(startSourceRecordingButtonId).addEventListener("click", () => document.getElementById("textPromptArea").disabled = true);
+    document.getElementById(stopSourceRecordingButtonId).addEventListener("click", () => stopRecording("source", sourcePreviewId));
+
+    const startTargetRecordingButtonId = "startRecordingTarget";
+    const stopTargetRecordingButtonId = "stopRecordingTarget";
+    const targetPreviewId = "targetAudioPreview";
+    const targetnputId = "targetFile";
+
+    document.getElementById(startTargetRecordingButtonId).addEventListener("click", () => startRecording("target", startTargetRecordingButtonId, stopTargetRecordingButtonId, targetPreviewId, targetnputId, "target.wav"));
+    document.getElementById(stopTargetRecordingButtonId).addEventListener("click", () => stopRecording("target", targetPreviewId));
 </script>
