@@ -10,6 +10,8 @@ namespace Glosy.Services
         private readonly string _pythonPath;
         private readonly string _ffmpegPath;
         private readonly string _tempFilesDirectory = @"Multimedia";
+        private readonly string _synthesisScriptPath = @"PythonScripts\synthesis.py";
+        private readonly string _conversionScriptPath = @"PythonScripts\conversion.py";
 
         public AudioProcessingService(IConfiguration configuration)
         {
@@ -17,9 +19,17 @@ namespace Glosy.Services
             _ffmpegPath = configuration["Config:FFmpegPath"];
         }
 
+        public AudioProcessingService(IConfiguration configuration, string synthesisScriptPath, string conversionScriptPath)
+        {
+            _pythonPath = configuration["Config:PythonPath"];
+            _ffmpegPath = configuration["Config:FFmpegPath"];
+            _synthesisScriptPath = synthesisScriptPath;
+            _conversionScriptPath = conversionScriptPath;
+        }
+
         public async Task<ProcessingResult> SynthesizeVoiceAsync(AudioProcessingModel model)
         {
-            var scriptPath = @"PythonScripts\synthesis.py";
+            var scriptPath = _synthesisScriptPath;
             model.ModelName = "tts_models/multilingual/multi-dataset/xtts_v2"; // TODO: assigning it to the model may not be necessary. I leave it for now.
 
             var outputFilePath = Path.Combine("generated", "out.wav"); // to show output file preview in the UI, the file path mustn't have the 'wwwroot' folder
@@ -49,7 +59,7 @@ namespace Glosy.Services
 
         public async Task<ProcessingResult> ConvertVoiceAsync(AudioProcessingModel model)
         {
-            var scriptPath = @"PythonScripts\conversion.py";
+            var scriptPath = _conversionScriptPath;
             model.ModelName = "voice_conversion_models/multilingual/multi-dataset/openvoice_v2"; // TODO: assigning it to the model may not be necessary. I leave it for now.
 
             var result = new ProcessingResult();
