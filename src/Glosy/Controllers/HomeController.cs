@@ -35,19 +35,26 @@ namespace Glosy.Controllers
         [HttpPost]
         public async Task<ActionResult> ProcessVoice(AudioProcessingModel model)
         {
-            var outputFilePath = string.Empty;
-
-            if (model.SourceFile != null)
+            if (!string.IsNullOrWhiteSpace(model.TextPrompt))
             {
-                outputFilePath = await _audioProcessingService.ConvertVoiceAsync(model);
+                var synthesisResult = await _audioProcessingService.SynthesizeVoiceAsync(model);
+
+                if (!synthesisResult.IsSuccessful)
+                {
+                    return Json(new { error = synthesisResult.ErrorMessage });
+                }
+
+                return Json(new { audioUrl = synthesisResult.OutputFilePath });
             }
-            else if (!string.IsNullOrWhiteSpace(model.TextPrompt))
+
+            var conversionResult = await _audioProcessingService.ConvertVoiceAsync(model);
+
+            if (!conversionResult.IsSuccessful)
             {
-                outputFilePath = await _audioProcessingService.SynthesizeVoiceAsync(model);
-
+                return Json(new { error = conversionResult.ErrorMessage });
             }
 
-            return Json(new { audioUrl = outputFilePath });
+            return Json(new { audioUrl = conversionResult.OutputFilePath });
         }
     }
 }

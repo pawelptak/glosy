@@ -95,6 +95,7 @@
                 <div id="outputAudioPreview"></div>
             </div>
 
+            <div id="errorContainer" class="text-center" style="display: none; color: red;"></div>
         </div>
     }
 
@@ -147,6 +148,7 @@
 
         $("#loadingIndicator").show();
         $("#resultContainer").hide();
+        $("#errorContainer").hide();
 
         var formData = new FormData(this);
 
@@ -168,10 +170,16 @@
                 preview.appendChild(audio);
                 $("#resultContainer").show();
             }
+            else {
+                $("#loadingIndicator").hide();
+                $("#errorContainer").text('@Html.Raw(Localizer.GetString("ProcessingErrorMessage")): ' + data.error).show();
+                console.error("Error:", data.error);
+            }
         })
         .catch(error => {
             $("#loadingIndicator").hide();
-            console.error("Error:", error)
+            $("#errorContainer").text('@Html.Raw(Localizer.GetString("ProcessingErrorMessage"))').show();
+            console.error("Error:", error);
         });
     });
 </script>
