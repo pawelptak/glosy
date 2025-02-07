@@ -180,11 +180,14 @@
     function toggleSourceFileInput() {
         var textArea = document.getElementById("textPromptArea");
         var fileInput = document.getElementById("sourceFile");
+        var startRecordingButton = document.getElementById("startRecordingSource");
 
         if (textArea.value.trim().length > 0) {
             fileInput.disabled = true;
+            startRecordingButton.disabled = true;
         } else {
             fileInput.disabled = false;
+            startRecordingButton.disabled = false;
         }
     }
 
