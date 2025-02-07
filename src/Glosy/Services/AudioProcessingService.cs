@@ -19,12 +19,13 @@ namespace Glosy.Services
             _ffmpegPath = configuration["Config:FFmpegPath"];
         }
 
-        public AudioProcessingService(IConfiguration configuration, string synthesisScriptPath, string conversionScriptPath)
+        public AudioProcessingService(IConfiguration configuration, string tempFilesDirectory, string synthesisScriptPath, string conversionScriptPath)
         {
             _pythonPath = configuration["Config:PythonPath"];
             _ffmpegPath = configuration["Config:FFmpegPath"];
             _synthesisScriptPath = synthesisScriptPath;
             _conversionScriptPath = conversionScriptPath;
+            _tempFilesDirectory = tempFilesDirectory;
         }
 
         public async Task<ProcessingResult> SynthesizeVoiceAsync(AudioProcessingModel model)
@@ -47,11 +48,16 @@ namespace Glosy.Services
                 result.IsSuccessful = true;
                 result.OutputFilePath = outputFilePath;
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 result.ErrorMessage = ex.Message;
                 Debug.WriteLine(ex, "An error occurred while processing the file.");
 
                 throw;
+            }
+            finally
+            {
+                ClearDirectory(_tempFilesDirectory);
             }
 
             return result;
@@ -86,6 +92,10 @@ namespace Glosy.Services
                 Debug.WriteLine(ex, "An error occurred while processing the file.");
 
                 throw;
+            }
+            finally
+            {
+                ClearDirectory(_tempFilesDirectory);
             }
 
             return result;
@@ -174,6 +184,24 @@ namespace Glosy.Services
             await RunProcessAsync(_ffmpegPath, arguments);
 
             File.Replace(convertedFilePath, inputPath, null);
+        }
+
+        private void ClearDirectory(string directory)
+        {
+            if (!Directory.Exists(directory))
+            {
+                return;
+            }
+
+            DirectoryInfo di = new(directory);
+
+            foreach (var file in di.GetFiles())
+            {
+                if (!file.Name.EndsWith(".gitkeep"))
+                {
+                    file.Delete();
+                }
+            }
         }
     }
 }

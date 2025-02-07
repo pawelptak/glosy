@@ -12,6 +12,7 @@ namespace Glosy.Tests
         private readonly string _conversionModel = "voice_conversion_models/multilingual/multi-dataset/openvoice_v2";
         private readonly string _synthesisScriptPath;
         private readonly string _conversionScriptPath;
+        private readonly string _multimediaDirectory = "Multimedia";
 
         public UnitTests()
         {
@@ -31,7 +32,7 @@ namespace Glosy.Tests
                 .AddInMemoryCollection(inMemorySettings)
                 .Build();
 
-            _audioProcessingService = new AudioProcessingService(configuration, _synthesisScriptPath, _conversionScriptPath);
+            _audioProcessingService = new AudioProcessingService(configuration, _multimediaDirectory, _synthesisScriptPath, _conversionScriptPath);
 
         }
 
@@ -71,6 +72,43 @@ namespace Glosy.Tests
 
             // Assert
             Assert.True(fileInfo.Length > 0);
+        }
+
+        [Fact]
+        public async Task Multimedia_Folder_Should_Be_Empty_After_Synthesis_Completes() // Except the .gitkeep file
+        {
+            // Arrange
+            var textPrompt = "Witaj przyjacielu.";
+            var targetFilePath = GetTestFilePath("Multimedia/zebrowski.wav");
+            var targetFile = CreateFormFileFromPath(targetFilePath);
+            var model = new AudioProcessingModel { ModelName = _synthesisModel, TextPrompt = textPrompt, TargetFile = targetFile };
+
+            // Act
+            var result = await _audioProcessingService.SynthesizeVoiceAsync(model);
+
+            // Assert
+            var outputFilesExist = Directory.GetFiles(_multimediaDirectory).Any(file => !file.EndsWith(".gitkeep"));
+            Assert.False(outputFilesExist, "Output folder is not empty.");
+        }
+
+        [Fact]
+        public async Task Multimedia_Folder_Should_Be_Empty_After_Conversion_Completes() // Except the .gitkeep file
+        {
+            // Arrange
+            var sourceFilePath = GetTestFilePath("Multimedia/stonoga.wav");
+            var sourceFile = CreateFormFileFromPath(sourceFilePath);
+
+            var targetFilePath = GetTestFilePath("Multimedia/zebrowski.wav");
+            var targetFile = CreateFormFileFromPath(targetFilePath);
+
+            var model = new AudioProcessingModel { ModelName = _conversionModel, SourceFile = sourceFile, TargetFile = targetFile };
+
+            // Act
+            var result = await _audioProcessingService.ConvertVoiceAsync(model);
+
+            // Assert
+            var outputFilesExist = Directory.GetFiles(_multimediaDirectory).Any(file => !file.EndsWith(".gitkeep"));
+            Assert.False(outputFilesExist, "Output folder is not empty.");
         }
 
         private static IFormFile CreateFormFileFromPath(string filePath)
