@@ -36,7 +36,7 @@
                     <label>@Localizer.GetString("UploadAudioLabel")</label>
                     <div class="input-container">
                         <div class="input-group mb-2">
-                            @Html.TextBoxFor(m => m.SourceFile, new { type = "file", accept = ".wav", @class = "form-control custom-file-input", id = "sourceFile" })
+                            @Html.TextBoxFor(m => m.SourceFile, new { type = "file", accept = ".wav, .mp3", @class = "form-control custom-file-input", id = "sourceFile" })
                             <button class="btn btn-outline-secondary clear-file-input" id="clearRecodringButton" type="button">
                                 <i class="bi bi-trash"></i>
                             </button>
@@ -71,7 +71,7 @@
                 <label>@Localizer.GetString("UploadAudioLabel")</label>
                 <div class="input-container">
                     <div class="input-group mb-2">
-                        @Html.TextBoxFor(m => m.TargetFile, new { type = "file", required = "required", accept = ".wav", @class = "form-control", id = "targetFile" })
+                        @Html.TextBoxFor(m => m.TargetFile, new { type = "file", required = "required", accept = ".wav, .mp3", @class = "form-control", id = "targetFile" })
                         <button class="btn btn-outline-secondary clear-file-input" type="button">
                             <i class="bi bi-trash"></i>
                         </button>

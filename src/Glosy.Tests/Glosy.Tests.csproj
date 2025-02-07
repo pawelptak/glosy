@@ -31,15 +31,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Multimedia\" />
+    <Folder Include="TestFiles\" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Multimedia\stonoga.wav">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Update="TestFiles\stonoga.wav">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
-    <None Update="Multimedia\zebrowski.wav">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Update="TestFiles\zebrowski.wav">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 

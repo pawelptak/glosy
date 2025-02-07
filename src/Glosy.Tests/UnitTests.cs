@@ -42,7 +42,7 @@ namespace Glosy.Tests
         {
             // Arrange
             var textPrompt = "Witaj przyjacielu.";
-            var targetFilePath = GetTestFilePath("Multimedia/zebrowski.wav");
+            var targetFilePath = GetTestFilePath("TestFiles/zebrowski.wav");
             var targetFile = CreateFormFileFromPath(targetFilePath);
             var model = new AudioProcessingModel { ModelName = _synthesisModel, TextPrompt = textPrompt, TargetFile = targetFile };
 
@@ -58,10 +58,10 @@ namespace Glosy.Tests
         public async Task Conversion_Output_File_Should_Have_Size_Larger_Than_Zero()
         {
             // Arrange
-            var sourceFilePath = GetTestFilePath("Multimedia/stonoga.wav");
+            var sourceFilePath = GetTestFilePath("TestFiles/stonoga.wav");
             var sourceFile = CreateFormFileFromPath(sourceFilePath);
 
-            var targetFilePath = GetTestFilePath("Multimedia/zebrowski.wav");
+            var targetFilePath = GetTestFilePath("TestFiles/zebrowski.wav");
             var targetFile = CreateFormFileFromPath(targetFilePath);
 
             var model = new AudioProcessingModel { ModelName = _conversionModel, SourceFile = sourceFile, TargetFile = targetFile };
@@ -79,7 +79,7 @@ namespace Glosy.Tests
         {
             // Arrange
             var textPrompt = "Witaj przyjacielu.";
-            var targetFilePath = GetTestFilePath("Multimedia/zebrowski.wav");
+            var targetFilePath = GetTestFilePath("TestFiles/zebrowski.wav");
             var targetFile = CreateFormFileFromPath(targetFilePath);
             var model = new AudioProcessingModel { ModelName = _synthesisModel, TextPrompt = textPrompt, TargetFile = targetFile };
 
@@ -95,10 +95,10 @@ namespace Glosy.Tests
         public async Task Multimedia_Folder_Should_Be_Empty_After_Conversion_Completes() // Except the .gitkeep file
         {
             // Arrange
-            var sourceFilePath = GetTestFilePath("Multimedia/stonoga.wav");
+            var sourceFilePath = GetTestFilePath("TestFiles/stonoga.wav");
             var sourceFile = CreateFormFileFromPath(sourceFilePath);
 
-            var targetFilePath = GetTestFilePath("Multimedia/zebrowski.wav");
+            var targetFilePath = GetTestFilePath("TestFiles/zebrowski.wav");
             var targetFile = CreateFormFileFromPath(targetFilePath);
 
             var model = new AudioProcessingModel { ModelName = _conversionModel, SourceFile = sourceFile, TargetFile = targetFile };
@@ -128,9 +128,10 @@ namespace Glosy.Tests
 
         private string GetTestFilePath(string relativePath)
         {
-            string baseDirectory = AppContext.BaseDirectory;
+            var currentDirectory = Directory.GetCurrentDirectory();
+            var testProjectDirectory = Directory.GetParent(currentDirectory).Parent.Parent.FullName;
 
-            return Path.Combine(baseDirectory, relativePath);
+            return Path.Combine(testProjectDirectory, relativePath);
         }
     }
 }
