@@ -75,6 +75,7 @@ namespace Glosy.Services
                 await SaveStreamToDrive(sourceFilePath, model.SourceFile);
 
                 //await ConvertIfRecordedAsync(model.SourceFile, sourceFilePath); // Left it temporarily
+                await ConvertIfMimeTypes(model.SourceFile, sourceFilePath, [AudioConstants.Mp3MimeType]);
 
                 var targetFilePath = Path.Combine(_tempFilesDirectory, model.TargetFile.FileName);
 
@@ -102,9 +103,9 @@ namespace Glosy.Services
         }
 
         // Audio recorded using microphone has to be converted to wav, otherwise it doesn't work idk why. UPDATE: this is probably only true for text to speech
-        private async Task ConvertIfRecordedAsync(IFormFile audioFile, string filePath)
+        private async Task ConvertIfMimeTypes(IFormFile audioFile, string filePath, string[] convertedMimeTypes)
         {
-            if (string.Equals(audioFile.ContentType, AudioConstants.RecordingMimeType))
+            if (convertedMimeTypes.Contains(audioFile.ContentType))
             {
                 await ConvertToWavAsync(filePath);
             }
@@ -114,7 +115,7 @@ namespace Glosy.Services
         {
             var targetFilePath = Path.Combine(_tempFilesDirectory, model.TargetFile.FileName);
             await SaveStreamToDrive(targetFilePath, model.TargetFile);
-            await ConvertIfRecordedAsync(model.TargetFile, targetFilePath);
+            await ConvertIfMimeTypes(model.TargetFile, targetFilePath, [AudioConstants.RecordingMimeType, AudioConstants.Mp3MimeType]);
 
             Directory.CreateDirectory(Path.GetDirectoryName(outputFilePath)); // create output directory if doesn't exist
 
