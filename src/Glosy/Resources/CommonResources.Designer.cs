@@ -79,6 +79,15 @@ namespace Glosy.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An unexpected error occurred.
+        /// </summary>
+        internal static string ProcessingErrorMessage {
+            get {
+                return ResourceManager.GetString("ProcessingErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Record.
         /// </summary>
         internal static string RecordingLabel {

@@ -8,8 +8,8 @@ namespace Glosy.Models
         public IFormFile SourceFile { get; set; }
         public required IFormFile TargetFile { get; set; }
 
-        [StringLength(224)] // This is the limit for Polish language
+        [StringLength(224)] // This is the model's limit for Polish language
         public string TextPrompt { get; set; }
-        public required IFormFile OutputFile { get; set; }
+        public IFormFile OutputFile { get; set; }
     }
 }

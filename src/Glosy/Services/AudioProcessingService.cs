@@ -10,6 +10,8 @@ namespace Glosy.Services
         private readonly string _pythonPath;
         private readonly string _ffmpegPath;
         private readonly string _tempFilesDirectory = @"Multimedia";
+        private readonly string _synthesisScriptPath = @"PythonScripts\synthesis.py";
+        private readonly string _conversionScriptPath = @"PythonScripts\conversion.py";
 
         public AudioProcessingService(IConfiguration configuration)
         {
@@ -17,9 +19,18 @@ namespace Glosy.Services
             _ffmpegPath = configuration["Config:FFmpegPath"];
         }
 
-        public async Task<string> SynthesizeVoiceAsync(AudioProcessingModel model)
+        public AudioProcessingService(IConfiguration configuration, string tempFilesDirectory, string synthesisScriptPath, string conversionScriptPath)
         {
-            var scriptPath = @"PythonScripts\synthesis.py";
+            _pythonPath = configuration["Config:PythonPath"];
+            _ffmpegPath = configuration["Config:FFmpegPath"];
+            _synthesisScriptPath = synthesisScriptPath;
+            _conversionScriptPath = conversionScriptPath;
+            _tempFilesDirectory = tempFilesDirectory;
+        }
+
+        public async Task<ProcessingResult> SynthesizeVoiceAsync(AudioProcessingModel model)
+        {
+            var scriptPath = _synthesisScriptPath;
             model.ModelName = "tts_models/multilingual/multi-dataset/xtts_v2"; // TODO: assigning it to the model may not be necessary. I leave it for now.
 
             var outputFilePath = Path.Combine("generated", "out.wav"); // to show output file preview in the UI, the file path mustn't have the 'wwwroot' folder
@@ -29,48 +40,85 @@ namespace Glosy.Services
 
             var language = "pl";
             var arguments = $"{model.ModelName} \"{model.TextPrompt}\" {targetFilePath} {language} {fullOutputFilePath}";
-            await ProcessVoice(model, scriptPath, arguments, fullOutputFilePath);
 
-            return outputFilePath;
-        }
-
-        public async Task<string> ConvertVoiceAsync(AudioProcessingModel model)
-        {
-            var scriptPath = @"PythonScripts\conversion.py";
-            model.ModelName = "voice_conversion_models/multilingual/multi-dataset/openvoice_v2"; // TODO: assigning it to the model may not be necessary. I leave it for now.
-            var outputFileName = "out.wav";
-
-
-            var sourceFilePath = Path.Combine(_tempFilesDirectory, model.SourceFile.FileName);
-            await SaveStreamToDrive(sourceFilePath, model.SourceFile);
-
-            if (string.Equals(model.SourceFile.ContentType, AudioConstants.RecordingMimeType)) // Audio recorded using microphone has to be converted to mp4, otherwise it doesn't work idk why
+            var result = new ProcessingResult();
+            try
             {
-                var convertedFilePath = Path.Combine(Path.GetDirectoryName(sourceFilePath), outputFileName);
-                await ConvertToWavAsync(sourceFilePath, convertedFilePath);
-                sourceFilePath = convertedFilePath;
+                var output = await ProcessVoice(model, scriptPath, arguments, fullOutputFilePath);
+                result.IsSuccessful = true;
+                result.OutputFilePath = outputFilePath;
+            }
+            catch (Exception ex)
+            {
+                result.ErrorMessage = ex.Message;
+                Debug.WriteLine(ex, "An error occurred while processing the file.");
+
+                throw;
+            }
+            finally
+            {
+                ClearDirectory(_tempFilesDirectory);
             }
 
-            var targetFilePath = Path.Combine(_tempFilesDirectory, model.TargetFile.FileName);
+            return result;
+        }
 
-            var outputFilePath = Path.Combine("generated", "out.wav"); // to show output file preview in the UI, the file path mustn't have the 'wwwroot' folder
-            var fullOutputFilePath = Path.Combine("wwwroot", outputFilePath);
+        public async Task<ProcessingResult> ConvertVoiceAsync(AudioProcessingModel model)
+        {
+            var scriptPath = _conversionScriptPath;
+            model.ModelName = "voice_conversion_models/multilingual/multi-dataset/openvoice_v2"; // TODO: assigning it to the model may not be necessary. I leave it for now.
 
-            var arguments = $"{model.ModelName} {sourceFilePath} {targetFilePath} {fullOutputFilePath}";
-            await ProcessVoice(model, scriptPath, arguments, fullOutputFilePath);
+            var result = new ProcessingResult();
+            try
+            {
+                var sourceFilePath = Path.Combine(_tempFilesDirectory, model.SourceFile.FileName);
+                await SaveStreamToDrive(sourceFilePath, model.SourceFile);
 
-            return outputFilePath;
+                //await ConvertIfRecordedAsync(model.SourceFile, sourceFilePath); // Left it temporarily
+
+                var targetFilePath = Path.Combine(_tempFilesDirectory, model.TargetFile.FileName);
+
+                var outputFilePath = Path.Combine("generated", "out.wav"); // to show output file preview in the UI, the file path mustn't have the 'wwwroot' folder
+                var fullOutputFilePath = Path.Combine("wwwroot", outputFilePath);
+
+                var arguments = $"{model.ModelName} {sourceFilePath} {targetFilePath} {fullOutputFilePath}";
+                var output = await ProcessVoice(model, scriptPath, arguments, fullOutputFilePath);
+                result.IsSuccessful = true;
+                result.OutputFilePath = outputFilePath;
+            }
+            catch (Exception ex)
+            {
+                result.ErrorMessage = ex.Message;
+                Debug.WriteLine(ex, "An error occurred while processing the file.");
+
+                throw;
+            }
+            finally
+            {
+                ClearDirectory(_tempFilesDirectory);
+            }
+
+            return result;
+        }
+
+        // Audio recorded using microphone has to be converted to wav, otherwise it doesn't work idk why. UPDATE: this is probably only true for text to speech
+        private async Task ConvertIfRecordedAsync(IFormFile audioFile, string filePath)
+        {
+            if (string.Equals(audioFile.ContentType, AudioConstants.RecordingMimeType))
+            {
+                await ConvertToWavAsync(filePath);
+            }
         }
 
         private async Task<string> ProcessVoice(AudioProcessingModel model, string scriptPath, string scriptArguments, string outputFilePath)
         {
             var targetFilePath = Path.Combine(_tempFilesDirectory, model.TargetFile.FileName);
             await SaveStreamToDrive(targetFilePath, model.TargetFile);
+            await ConvertIfRecordedAsync(model.TargetFile, targetFilePath);
+
             Directory.CreateDirectory(Path.GetDirectoryName(outputFilePath)); // create output directory if doesn't exist
 
-            await RunPythonScriptAsync(_pythonPath, scriptPath, scriptArguments);
-
-            return outputFilePath;
+            return await RunPythonScriptAsync(_pythonPath, scriptPath, scriptArguments);
         }
 
         private async Task SaveStreamToDrive(string outputPath, IFormFile file)
@@ -79,7 +127,7 @@ namespace Glosy.Services
             await file.CopyToAsync(fileStream);
         }
 
-        private async static Task RunProcessAsync(string filePath, string arguments)
+        private async static Task<string> RunProcessAsync(string filePath, string arguments)
         {
             ProcessStartInfo psi = new()
             {
@@ -118,19 +166,42 @@ namespace Glosy.Services
                 {
                     throw new OperationCanceledException($"{process.ProcessName} process exited with code {process.ExitCode}");
                 }
+
+                return string.Join(',', output);
             }
         }
 
-        private async static Task RunPythonScriptAsync(string pythonPath, string scriptPath, string scriptArguments)
+        private async static Task<string> RunPythonScriptAsync(string pythonPath, string scriptPath, string scriptArguments)
         {
-            await RunProcessAsync(pythonPath, $"{scriptPath} {scriptArguments}");
+            return await RunProcessAsync(pythonPath, $"{scriptPath} {scriptArguments}");
         }
 
-        private async Task ConvertToWavAsync(string inputPath, string outputPath)
+        private async Task ConvertToWavAsync(string inputPath)
         {
-            var arguments = $"-y -i {inputPath} {outputPath}";
+            var convertedFilePath = Path.Combine(Path.GetDirectoryName(inputPath), "converted.wav");
+            var arguments = $"-y -i {inputPath} {convertedFilePath}";
 
             await RunProcessAsync(_ffmpegPath, arguments);
+
+            File.Replace(convertedFilePath, inputPath, null);
+        }
+
+        private void ClearDirectory(string directory)
+        {
+            if (!Directory.Exists(directory))
+            {
+                return;
+            }
+
+            DirectoryInfo di = new(directory);
+
+            foreach (var file in di.GetFiles())
+            {
+                if (!file.Name.EndsWith(".gitkeep"))
+                {
+                    file.Delete();
+                }
+            }
         }
     }
 }

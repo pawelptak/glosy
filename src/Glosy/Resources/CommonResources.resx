@@ -123,6 +123,9 @@
   <data name="OutputFileLabel" xml:space="preserve">
     <value>Result</value>
   </data>
+  <data name="ProcessingErrorMessage" xml:space="preserve">
+    <value>An unexpected error occurred</value>
+  </data>
   <data name="RecordingLabel" xml:space="preserve">
     <value>Record</value>
   </data>
