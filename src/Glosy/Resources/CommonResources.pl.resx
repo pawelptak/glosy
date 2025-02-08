@@ -126,9 +126,6 @@
   <data name="ProcessingErrorMessage" xml:space="preserve">
     <value>Coś się popsuło i nie będzie nic słychać</value>
   </data>
-  <data name="RecordingLabel" xml:space="preserve">
-    <value>Nagraj</value>
-  </data>
   <data name="SourceFileLabel" xml:space="preserve">
     <value>Co mam powiedzieć?</value>
   </data>
@@ -154,6 +151,6 @@
     <value>Co mam powiedzieć?</value>
   </data>
   <data name="UploadAudioLabel" xml:space="preserve">
-    <value>Lub wybierz plik audio</value>
+    <value>Wybierz lub nagraj dźwięk</value>
   </data>
 </root>

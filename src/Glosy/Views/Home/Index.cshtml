@@ -16,28 +16,22 @@
     {
         <div class="d-grid gap-3">
 
-            <div>
+            <div class="mb-5">
                 @Html.LabelFor(m => m.SourceFile, @Localizer.GetString("SourceFileLabel"), new { @class = "h5 mb-3" })
-                <div class="mb-3">
-                    <label>@Localizer.GetString("RecordingLabel")</label>
-                    <div>
-                        <button id="startRecordingSource" class="btn btn-outline-secondary" type="button">
-                            <i class="bi bi-record-fill" style="color: #d44054"></i>
-                            @Localizer.GetString("StartRecordingText")
-                        </button>
-                        <button id="stopRecordingSource" class="btn btn-outline-secondary" disabled type="button">
-                            <i class="bi bi-stop-fill"></i>
-                            @Localizer.GetString("StopRecordingText")
-                        </button>
-                    </div>
-                </div>
-
                 <div class="mb-3">
                     <label>@Localizer.GetString("UploadAudioLabel")</label>
                     <div class="input-container">
                         <div class="input-group mb-2">
                             @Html.TextBoxFor(m => m.SourceFile, new { type = "file", accept = ".wav, .mp3", @class = "form-control custom-file-input", id = "sourceFile" })
-                            <button class="btn btn-outline-secondary clear-file-input" id="clearRecodringButton" type="button">
+                            <button id="startRecordingSource" class="btn btn-outline-secondary start-recording-button" type="button">
+                                <i class="bi bi-mic" style="color: #d44054"></i>
+                                <span class="hide-on-mobile">@Localizer.GetString("StartRecordingText")</span>
+                            </button>
+                            <button id="stopRecordingSource" class="btn btn-outline-secondary" disabled type="button">
+                                <i class="bi bi-stop-fill"></i>
+                                <span class="hide-on-mobile">@Localizer.GetString("StopRecordingText")</span>
+                            </button>
+                            <button class="btn btn-outline-danger clear-file-input" id="clearRecodringButton" type="button">
                                 <i class="bi bi-trash"></i>
                             </button>
                         </div>
@@ -52,36 +46,32 @@
 
             </div>
 
-            <div class="mb-3">
+            <div>
                 @Html.LabelFor(m => m.TargetFile, @Localizer.GetString("TargetFileLabel"), new { @class = "h5 mb-3" })
                 <div class="mb-3">
-                    <label>@Localizer.GetString("RecordingLabel")</label>
-                    <div>
-                        <button id="startRecordingTarget" class="btn btn-outline-secondary" type="button">
-                            <i class="bi bi-record-fill" style="color: #d44054"></i>
-                            @Localizer.GetString("StartRecordingText")
-                        </button>
-                        <button id="stopRecordingTarget" class="btn btn-outline-secondary" disabled type="button">
-                            <i class="bi bi-stop-fill"></i>
-                            @Localizer.GetString("StopRecordingText")
-                        </button>
+                    <label>@Localizer.GetString("UploadAudioLabel")</label>
+                    <div class="input-container">
+                        <div class="input-group mb-2">
+                            @Html.TextBoxFor(m => m.TargetFile, new { type = "file", required = "required", accept = ".wav, .mp3", @class = "form-control", id = "targetFile" })
+                            <button id="startRecordingTarget" class="btn btn-outline-secondary start-recording-button" type="button">
+                                <i class="bi bi-mic" style="color: #d44054"></i>
+                                <span class="hide-on-mobile">@Localizer.GetString("StartRecordingText")</span>
+                            </button>
+                            <button id="stopRecordingTarget" class="btn btn-outline-secondary" disabled type="button">
+                                <i class="bi bi-stop-fill"></i>
+                                <span class="hide-on-mobile">@Localizer.GetString("StopRecordingText")</span>
+                            </button>
+                            <button class="btn btn-outline-danger clear-file-input" type="button">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                        <audio id="targetAudioPreview" class="audio-preview" controls style="display: none;"></audio>
                     </div>
-                </div>
-
-                <label>@Localizer.GetString("UploadAudioLabel")</label>
-                <div class="input-container">
-                    <div class="input-group mb-2">
-                        @Html.TextBoxFor(m => m.TargetFile, new { type = "file", required = "required", accept = ".wav, .mp3", @class = "form-control", id = "targetFile" })
-                        <button class="btn btn-outline-secondary clear-file-input" type="button">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </div>
-                    <audio id="targetAudioPreview" class="audio-preview" controls style="display: none;"></audio>
                 </div>
             </div>
 
 
-            <button class="btn btn-primary mb-3" type="submit" title="@Localizer.GetString("SubmitButtonTitle")">@Localizer.GetString("SubmitButtonText")</button>
+            <button class="btn btn-primary mb-5" type="submit" title="@Localizer.GetString("SubmitButtonTitle")">@Localizer.GetString("SubmitButtonText")</button>
 
             <div id="loadingIndicator" class="text-center" style="display: none;">
                 <div class="spinner-border" role="status">
@@ -92,7 +82,7 @@
 
             <div id="resultContainer" style="display: none;">
                 @Html.LabelFor(m => m.OutputFile, @Localizer.GetString("OutputFileLabel"), new { @class = "h5 mb-3" })
-                <div id="outputAudioPreview"></div>
+                <audio id="outputAudioPreview" class="audio-preview" controls></audio>
             </div>
 
             <div id="errorContainer" class="text-center" style="display: none; color: red;"></div>
@@ -162,12 +152,8 @@
 
             if (data.audioUrl) {
                 var preview = document.getElementById("outputAudioPreview");
-                preview.innerHTML = '';
-
-                var audio = document.createElement("audio");
-                audio.controls = true;
-                audio.src = data.audioUrl;
-                preview.appendChild(audio);
+                preview.src = data.audioUrl;
+                preview.load();
                 $("#resultContainer").show();
             }
             else {
@@ -220,12 +206,19 @@
 
 <script>
     let mediaRecorders = {};
+    let activeStreams = {};
+    let audioBlobs = {};
 
-    async function startRecording(recorderId, startButtonId, stopButtonId, audioPreviewId, audioFileInputId, recordingName){
-        let audioChunks = []
+    // This is a small miracle that it works on iOS, hence all these stopping streams, revoking URLs and timeouts
+    async function startRecording(recorderId, startButtonId, stopButtonId, audioPreviewId, audioFileInputId, recordingName) {
+        stopAllStreams();
+
+        let audioChunks = [];
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        const audioMimeType = '@AudioConstants.RecordingMimeType';
 
+        activeStreams[recorderId] = stream;
+
+        const audioMimeType = '@AudioConstants.RecordingMimeType';
         const mediaRecorder = new MediaRecorder(stream);
         mediaRecorders[recorderId] = mediaRecorder;
 
@@ -237,11 +230,24 @@
         document.getElementById(stopButtonId).disabled = false;
         document.getElementById(startButtonId).disabled = true;
 
-        mediaRecorder.onstop = () => {
+        mediaRecorder.onstop = async () => {
             let audioBlob = new Blob(audioChunks, { type: audioMimeType });
+
+            audioBlobs[recorderId] = audioBlob;
+
+            stopStream(recorderId);
+
             let audioURL = URL.createObjectURL(audioBlob);
             let audio = document.getElementById(audioPreviewId);
-            audio.src = audioURL;
+
+            if (audio.src) {
+                URL.revokeObjectURL(audio.src);
+            }
+
+            setTimeout(() => {
+                audio.src = audioURL;
+                audio.load();
+            }, 50);
 
             document.getElementById(stopButtonId).disabled = true;
             document.getElementById(startButtonId).disabled = false;
@@ -252,20 +258,47 @@
             const dataTransfer = new DataTransfer();
             dataTransfer.items.add(file);
             fileInput.files = dataTransfer.files;
-
-            document.getElementById(stopButtonId).disabled = true;
-            document.getElementById(startButtonId).disabled = false;
         };
     }
 
-    function stopRecording(recorderId, audioPreviewId) {
-        if (mediaRecorders[recorderId]){
-            mediaRecorders[recorderId].stop();
-            delete mediaRecorders[recorderId];
-            $('#' + audioPreviewId).show();
+    function stopAllStreams() {
+        Object.keys(mediaRecorders).forEach(recorderId => {
+            if (mediaRecorders[recorderId] && mediaRecorders[recorderId].state !== "inactive") {
+                mediaRecorders[recorderId].stop();
+            }
+        });
+
+        Object.keys(activeStreams).forEach(recorderId => stopStream(recorderId));
+    }
+
+    function stopStream(recorderId) {
+        if (activeStreams[recorderId]) {
+            activeStreams[recorderId].getTracks().forEach(track => track.stop());
+            delete activeStreams[recorderId];
         }
     }
 
+    function stopRecording(recorderId, audioPreviewId) {
+        if (mediaRecorders[recorderId]) {
+            mediaRecorders[recorderId].stop();
+            delete mediaRecorders[recorderId];
+
+            let audio = document.getElementById(audioPreviewId);
+            if (audioBlobs[recorderId]) {
+                let audioURL = URL.createObjectURL(audioBlobs[recorderId]);
+
+                if (audio.src) {
+                    URL.revokeObjectURL(audio.src);
+                }
+
+                setTimeout(() => {
+                    audio.src = audioURL;
+                    audio.load();
+                }, 50);
+            }
+            $('#' + audioPreviewId).show();
+        }
+    }
 
     const startSourceRecordingButtonId = "startRecordingSource";
     const stopSourceRecordingButtonId = "stopRecordingSource";

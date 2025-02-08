@@ -126,9 +126,6 @@
   <data name="ProcessingErrorMessage" xml:space="preserve">
     <value>An unexpected error occurred</value>
   </data>
-  <data name="RecordingLabel" xml:space="preserve">
-    <value>Record</value>
-  </data>
   <data name="SourceFileLabel" xml:space="preserve">
     <value>Say</value>
   </data>
@@ -154,6 +151,6 @@
     <value>Write what I should say...</value>
   </data>
   <data name="UploadAudioLabel" xml:space="preserve">
-    <value>Or upload an audio file</value>
+    <value>Upload or record an audio file</value>
   </data>
 </root>

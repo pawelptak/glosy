@@ -1,3 +1,12 @@
+:root {
+    --accent-color: black;
+    --accent-color-dark: #8a8987;
+    --dark-grey: #1e1e1e;
+    --grey: #4f4f4e;
+    --light-grey: #8a8987;
+    --lighter-grey: #c7c7c7;
+}
+
 @font-face {
     font-family: 'Nunito';
     src: url('/fonts/Nunito.ttf') format('truetype');
@@ -37,4 +46,62 @@ label {
 
 .h5 {
     font-weight: 600;
+}
+
+.btn {
+    border-radius: 1rem;
+}
+
+.btn-primary {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+}
+
+    .btn-primary:hover {
+        filter: brightness(0.8);
+        background-color: var(--dark-grey);
+    }
+
+    .btn-primary:focus {
+        background-color: var(--dark-grey);
+    }
+
+    /*clicked*/
+    .btn-primary:active {
+        background-color: var(--grey);
+    }
+
+:focus {
+    box-shadow: 0 0 0 0.1rem var(--accent-color-dark) !important;
+}
+
+.audio-preview {
+    width: 100%;
+    height: 40px;
+}
+
+.form-control {
+    border-radius: 1rem;
+    border: 1px solid var(--lighter-grey);
+}
+
+.btn-outline-secondary {
+    border: 1px solid var(--lighter-grey);
+}
+
+.text-muted img {
+    filter: invert(45%) sepia(0%) saturate(100%) hue-rotate(180deg);
+    vertical-align: text-top;
+    height: 16pt;
+    margin-left: 5px;
+}
+
+@media (max-width: 768px) {
+    .hide-on-mobile {
+        display: none;
+    }
+}
+
+.start-recording-button:disabled i::before {
+    content: "\F48D";
 }

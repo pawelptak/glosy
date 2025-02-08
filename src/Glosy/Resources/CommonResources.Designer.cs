@@ -88,15 +88,6 @@ namespace Glosy.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Record.
-        /// </summary>
-        internal static string RecordingLabel {
-            get {
-                return ResourceManager.GetString("RecordingLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Say.
         /// </summary>
         internal static string SourceFileLabel {
@@ -169,7 +160,7 @@ namespace Glosy.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Or upload an audio file.
+        ///   Looks up a localized string similar to Upload or record an audio file.
         /// </summary>
         internal static string UploadAudioLabel {
             get {
