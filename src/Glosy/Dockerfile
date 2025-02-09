@@ -17,7 +17,7 @@ RUN python -m venv /app/venv
 ENV PATH="/app/venv/bin:$PATH"
 
 # Copy requirements file and install dependencies
-COPY ../../requirements.txt /app/requirements.txt
+COPY requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r /app/requirements.txt
 
 # Install PyTorch
