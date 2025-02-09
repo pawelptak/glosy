@@ -23,15 +23,15 @@
                     <div class="input-container">
                         <div class="input-group mb-2">
                             @Html.TextBoxFor(m => m.SourceFile, new { type = "file", accept = ".wav, .mp3", @class = "form-control custom-file-input", id = "sourceFile" })
-                            <button id="startRecordingSource" class="btn btn-outline-secondary start-recording-button" type="button">
-                                <i class="bi bi-mic" style="color: #d44054"></i>
+                            <button id="startRecordingSource" class="btn btn-outline-secondary recording-button start-recording-button" type="button">
+                                <i class="bi bi-mic"></i>
                                 <span class="hide-on-mobile">@Localizer.GetString("StartRecordingText")</span>
                             </button>
-                            <button id="stopRecordingSource" class="btn btn-outline-secondary" disabled type="button">
+                            <button id="stopRecordingSource" class="btn btn-outline-secondary recording-button stop-recording-button" style="display: none;" type="button">
                                 <i class="bi bi-stop-fill"></i>
                                 <span class="hide-on-mobile">@Localizer.GetString("StopRecordingText")</span>
                             </button>
-                            <button class="btn btn-outline-danger clear-file-input" id="clearRecodringButton" type="button">
+                            <button class="btn btn-outline-danger clear-file-input recording-button" id="clearRecodringButton" type="button">
                                 <i class="bi bi-trash"></i>
                             </button>
                         </div>
@@ -53,15 +53,15 @@
                     <div class="input-container">
                         <div class="input-group mb-2">
                             @Html.TextBoxFor(m => m.TargetFile, new { type = "file", required = "required", accept = ".wav, .mp3", @class = "form-control", id = "targetFile" })
-                            <button id="startRecordingTarget" class="btn btn-outline-secondary start-recording-button" type="button">
-                                <i class="bi bi-mic" style="color: #d44054"></i>
+                            <button id="startRecordingTarget" class="btn btn-outline-secondary recording-button start-recording-button" type="button">
+                                <i class="bi bi-mic"></i>
                                 <span class="hide-on-mobile">@Localizer.GetString("StartRecordingText")</span>
                             </button>
-                            <button id="stopRecordingTarget" class="btn btn-outline-secondary" disabled type="button">
+                            <button id="stopRecordingTarget" class="btn btn-outline-secondary recording-button stop-recording-button" style="display: none;" type="button">
                                 <i class="bi bi-stop-fill"></i>
                                 <span class="hide-on-mobile">@Localizer.GetString("StopRecordingText")</span>
                             </button>
-                            <button class="btn btn-outline-danger clear-file-input" type="button">
+                            <button class="btn btn-outline-danger clear-file-input recording-button" type="button">
                                 <i class="bi bi-trash"></i>
                             </button>
                         </div>
@@ -227,8 +227,10 @@
         };
 
         mediaRecorder.start();
-        document.getElementById(stopButtonId).disabled = false;
-        document.getElementById(startButtonId).disabled = true;
+        $('#'+stopButtonId).show();
+        $('#'+startButtonId).hide();
+        // document.getElementById(stopButtonId).disabled = false;
+        // document.getElementById(startButtonId).disabled = true;
 
         mediaRecorder.onstop = async () => {
             let audioBlob = new Blob(audioChunks, { type: audioMimeType });
@@ -249,8 +251,11 @@
                 audio.load();
             }, 50);
 
-            document.getElementById(stopButtonId).disabled = true;
-            document.getElementById(startButtonId).disabled = false;
+            // document.getElementById(stopButtonId).disabled = true;
+            // document.getElementById(startButtonId).disabled = false;
+
+            $('#'+stopButtonId).hide();
+            $('#'+startButtonId).show();
 
             const fileInput = document.getElementById(audioFileInputId);
             const file = new File([audioBlob], recordingName, { type: audioMimeType });
