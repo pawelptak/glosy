@@ -1,16 +1,17 @@
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 
-# Install dependencies for Python
+# Install Python 3.11 and required dependencies
 RUN apt-get update && apt-get install -y \
-    python3.12 \
-    python3.12-venv \
-    python3.12-dev \
+    python3.11 \
+    python3.11-venv \
+    python3.11-dev \
+    python3-pip \
     && rm -rf /var/lib/apt/lists/*
 
-# Set Python 3.12 as default
-RUN ln -sf /usr/bin/python3.12 /usr/bin/python3
-RUN ln -sf /usr/bin/python3.12 /usr/bin/python
+# Set Python 3.11 as default
+RUN ln -sf /usr/bin/python3.11 /usr/bin/python3
+RUN ln -sf /usr/bin/python3.11 /usr/bin/python
 
 # Create virtual environment
 RUN python -m venv /app/venv
