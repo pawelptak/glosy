@@ -26,14 +26,14 @@ RUN pip install torch torchvision torchaudio
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
-COPY ["Glosy.csproj", "./"]
-RUN dotnet restore "Glosy.csproj"
+COPY ["Glosy.csproj", "."]
+RUN dotnet restore "./Glosy.csproj"
 COPY . .
-WORKDIR "/src/Glosy"
-RUN dotnet build "Glosy.csproj" -c Release -o /app/build
+WORKDIR "/src/."
+RUN dotnet build "./Glosy.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "Glosy.csproj" -c Release -o /app/publish
+RUN dotnet publish "./Glosy.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
