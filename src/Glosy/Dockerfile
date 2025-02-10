@@ -26,6 +26,7 @@ RUN pip install torch torchvision torchaudio
 
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
+ENV TTS_HOME=/PythonScripts/TTS/models
 COPY ["Glosy.csproj", "."]
 RUN dotnet restore "./Glosy.csproj"
 COPY . .
@@ -45,6 +46,8 @@ WORKDIR /app
 COPY --from=publish /app/publish .
 
 # This ensures that the environment variable is set correctly at runtime
-ENV APP_VERSION=${APP_VERSION}
+ENV APP_VERSION=${APP_VERSION} \
+    TTS_HOME=/PythonScripts/TTS/models
+
 
 ENTRYPOINT ["dotnet", "Glosy.dll"]
