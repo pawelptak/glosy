@@ -24,7 +24,7 @@ WORKDIR /app
 # # Install PyTorch
 # RUN pip install torch torchvision torchaudio
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 COPY ["Glosy.csproj", "."]
 RUN dotnet restore "./Glosy.csproj"
