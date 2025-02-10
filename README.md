@@ -2,7 +2,7 @@
 Voice conversion and synthesis web app
 
 ## Requirements
-- Python 3.12
+- Python 3.12 (3.11 should work as well)
 - FFmpeg [[FFmpeg Download]](https://ffmpeg.org/download.html)
 - PyTorch version that matches you CUDA version (more info [here](https://pytorch.org/get-started/locally/)). In my case:
     ```
