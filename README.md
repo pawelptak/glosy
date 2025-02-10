@@ -3,7 +3,7 @@ Voice conversion and synthesis web app
 
 ## Requirements
 - Python 3.12
-- FFmpeg [[yt-dlp Download]](https://github.com/yt-dlp/yt-dlp/releases/latest)
+- FFmpeg [[FFmpeg Download]](https://ffmpeg.org/download.html)
 - PyTorch version that matches you CUDA version (more info [here](https://pytorch.org/get-started/locally/)). In my case:
     ```
     pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu126
