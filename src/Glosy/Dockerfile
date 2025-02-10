@@ -1,28 +1,28 @@
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 
-# # Install Python 3.11 and required dependencies
-# RUN apt-get update && apt-get install -y \
-#     python3.11 \
-#     python3.11-venv \
-#     python3.11-dev \
-#     python3-pip \
-#     && rm -rf /var/lib/apt/lists/*
+# Install Python 3.11 and required dependencies
+RUN apt-get update && apt-get install -y \
+    python3.11 \
+    python3.11-venv \
+    python3.11-dev \
+    python3-pip \
+    && rm -rf /var/lib/apt/lists/*
 
-# # Set Python 3.11 as default
-# RUN ln -sf /usr/bin/python3.11 /usr/bin/python3
-# RUN ln -sf /usr/bin/python3.11 /usr/bin/python
+# Set Python 3.11 as default
+RUN ln -sf /usr/bin/python3.11 /usr/bin/python3
+RUN ln -sf /usr/bin/python3.11 /usr/bin/python
 
-# # Create virtual environment
-# RUN python -m venv /app/venv
-# ENV PATH="/app/venv/bin:$PATH"
+# Create virtual environment
+RUN python -m venv /app/venv
+ENV PATH="/app/venv/bin:$PATH"
 
-# # Copy requirements file and install dependencies
-# COPY requirements.txt /app/requirements.txt
-# RUN pip install --no-cache-dir -r /app/requirements.txt
+# Copy requirements file and install dependencies
+COPY requirements.txt /app/requirements.txt
+RUN pip install --no-cache-dir -r /app/requirements.txt
 
-# # Install PyTorch
-# RUN pip install torch torchvision torchaudio
+# Install PyTorch
+RUN pip install torch torchvision torchaudio
 
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
