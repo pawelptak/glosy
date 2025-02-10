@@ -1,3 +1,7 @@
+<p align="center">
+  <img height="100" src="src/Glosy/wwwroot/images/logo.svg">
+</p>
+
 # Glosy
 Voice conversion and synthesis web app
 
