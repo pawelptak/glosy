@@ -1,8 +1,9 @@
+# 
 <p>
   <img height="70" src="src/Glosy/wwwroot/images/logo.svg">
 </p>
 
-# Glosy
+
 Voice conversion and synthesis web app
 
 ## Requirements
