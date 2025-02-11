@@ -34,7 +34,7 @@ namespace Glosy.Services
 
         public async Task<ProcessingResult> SynthesizeVoiceAsync(AudioProcessingModel model)
         {
-            _logger.LogInformation("Executing {FunctionName} at {DateTime}. Target: {TargetFile}", nameof(SynthesizeVoiceAsync), DateTime.UtcNow, model.TargetFile);
+            _logger.LogInformation("Executing {FunctionName} at {DateTime}. Target: {TargetFile}", nameof(SynthesizeVoiceAsync), DateTime.UtcNow, model.TargetFile.FileName);
 
             var scriptPath = _synthesisScriptPath;
             model.ModelName = "tts_models/multilingual/multi-dataset/xtts_v2"; // TODO: assigning it to the model may not be necessary. I leave it for now.
@@ -71,7 +71,7 @@ namespace Glosy.Services
 
         public async Task<ProcessingResult> ConvertVoiceAsync(AudioProcessingModel model)
         {
-            _logger.LogInformation("Executing {FunctionName} at {DateTime}. Source: {SourceFile}, Target: {TargetFile}", nameof(ConvertVoiceAsync), DateTime.UtcNow, model.SourceFile, model.TargetFile);
+            _logger.LogInformation("Executing {FunctionName} at {DateTime}. Source: {SourceFile}, Target: {TargetFile}", nameof(ConvertVoiceAsync), DateTime.UtcNow, model.SourceFile.FileName, model.TargetFile.FileName);
 
             var scriptPath = _conversionScriptPath;
             model.ModelName = "voice_conversion_models/multilingual/multi-dataset/openvoice_v2"; // TODO: assigning it to the model may not be necessary. I leave it for now.
@@ -134,6 +134,8 @@ namespace Glosy.Services
 
         private async Task SaveStreamToDrive(string outputPath, IFormFile file)
         {
+            _logger.LogInformation("Executing {FunctionName} at {DateTime}. Saving {FileName} to {Path}", nameof(SaveStreamToDrive), DateTime.UtcNow, file.FileName, outputPath);
+
             using var fileStream = new FileStream(outputPath, FileMode.Create);
             await file.CopyToAsync(fileStream);
         }
@@ -191,6 +193,8 @@ namespace Glosy.Services
         {
             var convertedFilePath = Path.Combine(Path.GetDirectoryName(inputPath), "converted.wav");
             var arguments = $"-y -i {inputPath} {convertedFilePath}";
+
+            _logger.LogInformation("Executing {FunctionName} at {DateTime}. Running: {FfmpegPath} {Arguments}", nameof(ConvertToWavAsync), DateTime.UtcNow, _ffmpegPath, arguments);
 
             await RunProcessAsync(_ffmpegPath, arguments);
 
