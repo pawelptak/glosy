@@ -18,6 +18,9 @@ namespace Glosy.Controllers
 
         public IActionResult Index()
         {
+            string version = Environment.GetEnvironmentVariable("APP_VERSION") ?? "Development";
+            ViewBag.Version = version;
+
             return View();
         }
 
