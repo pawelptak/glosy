@@ -7,16 +7,20 @@ namespace Glosy.Services
 {
     public class AudioProcessingService : IAudioProcessingService
     {
+        private readonly ILogger<AudioProcessingService> _logger;
         private readonly string _pythonPath;
         private readonly string _ffmpegPath;
         private readonly string _tempFilesDirectory = @"Multimedia";
         private readonly string _synthesisScriptPath = @"PythonScripts\synthesis.py";
         private readonly string _conversionScriptPath = @"PythonScripts\conversion.py";
 
-        public AudioProcessingService(IConfiguration configuration)
+        public AudioProcessingService(ILogger<AudioProcessingService> logger, IConfiguration configuration)
         {
+            _logger = logger;
             _pythonPath = configuration["Config:PythonPath"];
             _ffmpegPath = configuration["Config:FFmpegPath"];
+
+            Directory.CreateDirectory(_tempFilesDirectory);
         }
 
         public AudioProcessingService(IConfiguration configuration, string tempFilesDirectory, string synthesisScriptPath, string conversionScriptPath)
@@ -30,6 +34,8 @@ namespace Glosy.Services
 
         public async Task<ProcessingResult> SynthesizeVoiceAsync(AudioProcessingModel model)
         {
+            _logger.LogInformation("Executing {FunctionName} at {DateTime}. Target: {TargetFile}", nameof(SynthesizeVoiceAsync), DateTime.UtcNow, model.TargetFile);
+
             var scriptPath = _synthesisScriptPath;
             model.ModelName = "tts_models/multilingual/multi-dataset/xtts_v2"; // TODO: assigning it to the model may not be necessary. I leave it for now.
 
@@ -65,6 +71,8 @@ namespace Glosy.Services
 
         public async Task<ProcessingResult> ConvertVoiceAsync(AudioProcessingModel model)
         {
+            _logger.LogInformation("Executing {FunctionName} at {DateTime}. Source: {SourceFile}, Target: {TargetFile}", nameof(ConvertVoiceAsync), DateTime.UtcNow, model.SourceFile, model.TargetFile);
+
             var scriptPath = _conversionScriptPath;
             model.ModelName = "voice_conversion_models/multilingual/multi-dataset/openvoice_v2"; // TODO: assigning it to the model may not be necessary. I leave it for now.
 
@@ -113,6 +121,8 @@ namespace Glosy.Services
 
         private async Task<string> ProcessVoice(AudioProcessingModel model, string scriptPath, string scriptArguments, string outputFilePath)
         {
+            _logger.LogInformation("Executing {FunctionName} at {DateTime}", nameof(ProcessVoice), DateTime.UtcNow);
+
             var targetFilePath = Path.Combine(_tempFilesDirectory, model.TargetFile.FileName);
             await SaveStreamToDrive(targetFilePath, model.TargetFile);
             await ConvertIfMimeTypes(model.TargetFile, targetFilePath, [AudioConstants.RecordingMimeType, AudioConstants.Mp3MimeType]);
