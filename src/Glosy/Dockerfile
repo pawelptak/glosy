@@ -36,17 +36,13 @@ RUN dotnet build "./Glosy.csproj" -c Release -o /app/build
 FROM build AS publish
 RUN dotnet publish "./Glosy.csproj" -c Release -o /app/publish
 
-# Accept the version as a build argument
-ARG VERSION
-# Set the version as an environment variable
-ENV APP_VERSION=$VERSION
-
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 
 # This ensures that the environment variable is set correctly at runtime
-ENV APP_VERSION=${APP_VERSION} \
+ARG VERSION
+ENV APP_VERSION=${VERSION} \
     TTS_HOME=/PythonScripts/TTS/models
 
 
