@@ -3,6 +3,7 @@ WORKDIR /app
 
 # Install Python 3.11 and required dependencies
 RUN apt-get update && apt-get install -y \
+    ffmpeg \
     python3.11 \
     python3.11-venv \
     python3.11-dev \
