@@ -351,10 +351,10 @@ class ModelManager:
     def create_dir_and_download_model(self, model_name: str, model_item: ModelItem, output_path: Path) -> None:
         output_path.mkdir(exist_ok=True, parents=True)
         # handle TOS
-        if not self.tos_agreed(model_item, output_path):
-            if not self.ask_tos(output_path):
-                output_path.rmdir()
-                raise Exception(" [!] You must agree to the terms of service to use this model.")
+        # if not self.tos_agreed(model_item, output_path):
+        #     if not self.ask_tos(output_path):
+        #         output_path.rmdir()
+        #         raise Exception(" [!] You must agree to the terms of service to use this model.")
         logger.info("Downloading model to %s", output_path)
         try:
             if "fairseq" in model_name:
