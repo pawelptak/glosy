@@ -86,7 +86,7 @@
                     <audio id="outputAudioPreview" class="audio-preview" controls></audio>
                     <button type="button" id="downloadResultButton" class="btn btn-outline-secondary">
                         <i class="bi bi-download"></i>
-                        @Localizer.GetString("DownloadResultButtonLabel")
+                        <span class="hide-on-mobile">@Localizer.GetString("DownloadResultButtonLabel")</span>
                     </button>
                 </div>
                 <input type="hidden" id="resultFileUrl" />
