@@ -181,6 +181,8 @@ namespace Glosy.Services
                 }
                 catch (Exception ex)
                 {
+                    _logger.LogError("{Process} exception: {ExceptionMessage}", filePath, ex.Message);
+
                     throw new InvalidOperationException(ex.Message);
                 }
 
