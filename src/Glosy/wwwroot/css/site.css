@@ -125,3 +125,19 @@ label {
     .stop-recording-button i::before {
         color: white;
     }
+
+
+#downloadResultButton {
+    color: var(--bs-body-color);
+    border: none;
+    background-color: #f1f3f4;
+    white-space: nowrap;
+}
+
+    #downloadResultButton:hover {
+        background-color: var(--lighter-grey);
+    }
+
+    #downloadResultButton span {
+        margin-left: 5px;
+    }
