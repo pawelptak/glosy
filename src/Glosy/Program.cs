@@ -11,6 +11,13 @@ builder.Services.AddLocalization();
 
 var app = builder.Build();
 
+var basePath = builder.Configuration.GetValue<string>("Config:BasePath");
+
+if (!string.IsNullOrEmpty(basePath))
+{
+    app.UsePathBase(basePath);
+}
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
