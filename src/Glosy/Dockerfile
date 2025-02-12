@@ -13,21 +13,21 @@ RUN apt-get update && apt-get install -y \
 # Set Python 3.11 as default
 #RUN ln -sf /usr/bin/python3.11 /usr/bin/python3
 #RUN ln -sf /usr/bin/python3.11 /usr/bin/python
-#
+
 # Create virtual environment
-#RUN python -m venv /app/venv
-#ENV PATH="/app/venv/bin:$PATH"
+RUN python -m venv /app/venv
+ENV PATH="/app/venv/bin:$PATH"
 
 # Copy requirements file and install dependencies
-#COPY requirements.txt /app/requirements.txt
-#RUN pip install --no-cache-dir -r /app/requirements.txt
+COPY requirements.txt /app/requirements.txt
+RUN pip install --no-cache-dir -r /app/requirements.txt
 
 # Install PyTorch
-#RUN pip install torch torchvision torchaudio
-#
+RUN pip install torch torchvision torchaudio
+
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
-ENV TTS_HOME=/PythonScripts/TTS/models
+ENV TTS_HOME=/app/PythonScripts/TTS/models
 COPY ["Glosy.csproj", "."]
 RUN dotnet restore "./Glosy.csproj"
 COPY . .
@@ -44,7 +44,7 @@ COPY --from=publish /app/publish .
 # This ensures that the environment variable is set correctly at runtime
 ARG VERSION
 ENV APP_VERSION=${VERSION} \
-    TTS_HOME=/PythonScripts/TTS/models
+    TTS_HOME=/app/PythonScripts/TTS/models
 
 
 ENTRYPOINT ["dotnet", "Glosy.dll"]
