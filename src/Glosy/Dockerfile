@@ -5,6 +5,7 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y \
     ffmpeg \
     python3-pip \
+    python3.11-venv \
     && rm -rf /var/lib/apt/lists/*
     #python3.11 \
     #python3.11-venv \
@@ -15,8 +16,8 @@ RUN apt-get update && apt-get install -y \
 #RUN ln -sf /usr/bin/python3.11 /usr/bin/python
 
 # Create virtual environment
-# RUN python3 -m venv /app/venv
-# ENV PATH="/app/venv/bin:$PATH"
+RUN python3 -m venv /app/venv
+ENV PATH="/app/venv/bin:$PATH"
 
 # Copy requirements file and install dependencies
 COPY requirements.txt /app/requirements.txt
