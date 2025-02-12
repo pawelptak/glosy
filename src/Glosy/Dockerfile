@@ -15,8 +15,8 @@ RUN apt-get update && apt-get install -y \
 #RUN ln -sf /usr/bin/python3.11 /usr/bin/python
 
 # Create virtual environment
-RUN python3 -m venv /app/venv
-ENV PATH="/app/venv/bin:$PATH"
+# RUN python3 -m venv /app/venv
+# ENV PATH="/app/venv/bin:$PATH"
 
 # Copy requirements file and install dependencies
 COPY requirements.txt /app/requirements.txt
