@@ -152,7 +152,7 @@ namespace Glosy.Services
             }
         }
 
-        private static Task<string> RunProcessAsync(string filePath, string arguments)
+        private async Task<string> RunProcessAsync(string filePath, string arguments)
         {
             _logger.LogInformation("Executing {Process} {Arguments} at {DateTime}", filePath, arguments, DateTime.UtcNow);
 
@@ -202,7 +202,7 @@ namespace Glosy.Services
             }
         }
 
-        private async static Task<string> RunPythonScriptAsync(string pythonPath, string scriptPath, string scriptArguments)
+        private async Task<string> RunPythonScriptAsync(string pythonPath, string scriptPath, string scriptArguments)
         {
             return await RunProcessAsync(pythonPath, $"{scriptPath} {scriptArguments}");
         }
