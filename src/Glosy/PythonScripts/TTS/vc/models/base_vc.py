@@ -18,7 +18,7 @@ from TTS.tts.utils.data import get_length_balancer_weights
 from TTS.tts.utils.languages import LanguageManager, get_language_balancer_weights
 from TTS.tts.utils.speakers import SpeakerManager, get_speaker_balancer_weights
 from TTS.tts.utils.synthesis import synthesis
-from TTS.tts.utils.visual import plot_alignment, plot_spectrogram
+# from TTS.tts.utils.visual import plot_alignment, plot_spectrogram
 from TTS.utils.audio.processor import AudioProcessor
 
 # pylint: skip-file
@@ -403,10 +403,10 @@ class BaseVC(BaseTrainerModel):
                 do_trim_silence=False,
             )
             test_audios[f"{idx}-audio"] = outputs_dict["wav"]
-            test_figures[f"{idx}-prediction"] = plot_spectrogram(
-                outputs_dict["outputs"]["model_outputs"], self.ap, output_fig=False
-            )
-            test_figures[f"{idx}-alignment"] = plot_alignment(outputs_dict["outputs"]["alignments"], output_fig=False)
+            # test_figures[f"{idx}-prediction"] = plot_spectrogram(
+            #     outputs_dict["outputs"]["model_outputs"], self.ap, output_fig=False
+            # )
+            # test_figures[f"{idx}-alignment"] = plot_alignment(outputs_dict["outputs"]["alignments"], output_fig=False)
         return test_figures, test_audios
 
     def on_init_start(self, trainer: Trainer) -> None:

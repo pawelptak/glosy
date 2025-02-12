@@ -14,7 +14,7 @@ from trainer.trainer_utils import get_optimizer, get_scheduler
 from TTS.vocoder.datasets import WaveGradDataset
 from TTS.vocoder.layers.wavegrad import Conv1d, DBlock, FiLM, UBlock
 from TTS.vocoder.models.base_vocoder import BaseVocoder
-from TTS.vocoder.utils.generic_utils import plot_results
+# from TTS.vocoder.utils.generic_utils import plot_results
 
 
 @dataclass
@@ -293,7 +293,8 @@ class Wavegrad(BaseVocoder):
             # compute voice
             y_pred = self.inference(x)
             # compute spectrograms
-            figures = plot_results(y_pred, y, ap, "test")
+            # figures = plot_results(y_pred, y, ap, "test")
+            figures = None
             # Sample audio
             sample_voice = y_pred[0].squeeze(0).detach().cpu().numpy()
         return figures, {"test/audio": sample_voice}

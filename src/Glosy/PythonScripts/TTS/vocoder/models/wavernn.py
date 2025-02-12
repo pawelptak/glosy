@@ -11,7 +11,7 @@ from torch.utils.data import DataLoader
 from torch.utils.data.distributed import DistributedSampler
 from trainer.io import load_fsspec
 
-from TTS.tts.utils.visual import plot_spectrogram
+# from TTS.tts.utils.visual import plot_spectrogram
 from TTS.utils.audio import AudioProcessor
 from TTS.utils.audio.numpy_transforms import mulaw_decode
 from TTS.vocoder.datasets.wavernn_dataset import WaveRNNDataset
@@ -568,12 +568,12 @@ class Wavernn(BaseVocoder):
             x = x.to(next(self.parameters()).device)
             y_hat = self.inference(x, self.config.batched, self.config.target_samples, self.config.overlap_samples)
             x_hat = ap.melspectrogram(y_hat)
-            figures.update(
-                {
-                    f"test_{idx}/ground_truth": plot_spectrogram(x.T),
-                    f"test_{idx}/prediction": plot_spectrogram(x_hat.T),
-                }
-            )
+            # figures.update(
+            #     {
+            #         f"test_{idx}/ground_truth": plot_spectrogram(x.T),
+            #         f"test_{idx}/prediction": plot_spectrogram(x_hat.T),
+            #     }
+            # )
             audios.update({f"test_{idx}/audio": y_hat})
             # audios.update({f"real_{idx}/audio": y_hat})
         return figures, audios
