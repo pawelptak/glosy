@@ -11,8 +11,8 @@ namespace Glosy.Services
         private readonly string _pythonPath;
         private readonly string _ffmpegPath;
         private readonly string _tempFilesDirectory = @"Multimedia";
-        private readonly string _synthesisScriptPath = @"PythonScripts\synthesis.py";
-        private readonly string _conversionScriptPath = @"PythonScripts\conversion.py";
+        private readonly string _synthesisScriptPath = Path.Combine("PythonScripts", "synthesis.py");
+        private readonly string _conversionScriptPath = Path.Combine("PythonScripts", "conversion.py");
 
         public AudioProcessingService(ILogger<AudioProcessingService> logger, IConfiguration configuration)
         {
