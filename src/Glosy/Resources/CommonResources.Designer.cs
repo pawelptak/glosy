@@ -70,6 +70,15 @@ namespace Glosy.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Download.
+        /// </summary>
+        internal static string DownloadResultButtonLabel {
+            get {
+                return ResourceManager.GetString("DownloadResultButtonLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Result.
         /// </summary>
         internal static string OutputFileLabel {

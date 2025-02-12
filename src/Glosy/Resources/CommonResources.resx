@@ -120,6 +120,9 @@
   <data name="BusyIndicatorText" xml:space="preserve">
     <value>Processing...</value>
   </data>
+  <data name="DownloadResultButtonLabel" xml:space="preserve">
+    <value>Download</value>
+  </data>
   <data name="OutputFileLabel" xml:space="preserve">
     <value>Result</value>
   </data>

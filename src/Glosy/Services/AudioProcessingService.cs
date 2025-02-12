@@ -40,7 +40,7 @@ namespace Glosy.Services
             var scriptPath = _synthesisScriptPath;
             model.ModelName = "tts_models/multilingual/multi-dataset/xtts_v2"; // TODO: assigning it to the model may not be necessary. I leave it for now.
 
-            var outputFilePath = Path.Combine("generated", "out.wav"); // to show output file preview in the UI, the file path mustn't have the 'wwwroot' folder
+            var outputFilePath = Path.Combine("generated", $"{Path.GetRandomFileName()}.wav"); // to show output file preview in the UI, the file path mustn't have the 'wwwroot' folder
             var fullOutputFilePath = Path.Combine("wwwroot", outputFilePath);
 
             var targetFilePath = Path.Combine(_tempFilesDirectory, model.TargetFile.FileName);
@@ -88,7 +88,7 @@ namespace Glosy.Services
 
                 var targetFilePath = Path.Combine(_tempFilesDirectory, model.TargetFile.FileName);
 
-                var outputFilePath = Path.Combine("generated", "out.wav"); // to show output file preview in the UI, the file path mustn't have the 'wwwroot' folder
+                var outputFilePath = Path.Combine("generated", $"{Path.GetRandomFileName()}.wav"); // to show output file preview in the UI, the file path mustn't have the 'wwwroot' folder
                 var fullOutputFilePath = Path.Combine("wwwroot", outputFilePath);
 
                 var arguments = $"{model.ModelName} {sourceFilePath} {targetFilePath} {fullOutputFilePath}";
@@ -103,10 +103,10 @@ namespace Glosy.Services
 
                 throw;
             }
-            //finally
-            //{
-            //    ClearDirectory(_tempFilesDirectory);
-            //}
+            finally
+            {
+                ClearDirectory(_tempFilesDirectory);
+            }
 
             return result;
         }

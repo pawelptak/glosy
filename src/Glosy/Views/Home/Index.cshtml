@@ -82,7 +82,14 @@
 
             <div id="resultContainer" style="display: none;">
                 @Html.LabelFor(m => m.OutputFile, @Localizer.GetString("OutputFileLabel"), new { @class = "h5 mb-3" })
-                <audio id="outputAudioPreview" class="audio-preview" controls></audio>
+                <div class="d-flex gap-2">
+                    <audio id="outputAudioPreview" class="audio-preview" controls></audio>
+                    <button type="button" id="downloadResultButton" class="btn btn-outline-secondary">
+                        <i class="bi bi-download"></i>
+                        @Localizer.GetString("DownloadResultButtonLabel")
+                    </button>
+                </div>
+                <input type="hidden" id="resultFileUrl" />
             </div>
 
             <div id="errorContainer" class="text-center" style="display: none; color: red;"></div>
@@ -90,6 +97,14 @@
     }
 
 </div>
+
+<script>
+    $("#downloadResultButton").click(function() {
+        var fileUrl = $("#resultFileUrl").val();      
+        var url = "@Url.Action("DownloadResult", "Home")" + "?fileUrl=wwwroot/" + encodeURIComponent(fileUrl);
+        window.location.href = url
+    });
+</script>
 
 <script>
     function createAudioPreview(inputId, previewId) {
@@ -155,6 +170,8 @@
                 preview.src = data.audioUrl;
                 preview.load();
                 $("#resultContainer").show();
+
+                $("#resultFileUrl").val(data.audioUrl);
             }
             else {
                 $("#loadingIndicator").hide();
