@@ -152,8 +152,10 @@ namespace Glosy.Services
             }
         }
 
-        private async static Task<string> RunProcessAsync(string filePath, string arguments)
+        private static Task<string> RunProcessAsync(string filePath, string arguments)
         {
+            _logger.LogInformation("Executing {Process} {Arguments} at {DateTime}", filePath, arguments, DateTime.UtcNow);
+
             ProcessStartInfo psi = new()
             {
                 FileName = filePath,
@@ -189,6 +191,8 @@ namespace Glosy.Services
 
                 if (process.ExitCode != 0)
                 {
+                    _logger.LogError("{Process} error: {Output}", string.Join(',', output));
+
                     throw new OperationCanceledException($"{process.ProcessName} process exited with code {process.ExitCode}");
                 }
 
@@ -206,7 +210,7 @@ namespace Glosy.Services
             var convertedFilePath = Path.Combine(Path.GetDirectoryName(inputPath), "converted.wav");
             var arguments = $"-y -i {inputPath} {convertedFilePath}";
 
-            _logger.LogInformation("Executing {FunctionName} at {DateTime}. Running: {FfmpegPath} {Arguments}", nameof(ConvertToWavAsync), DateTime.UtcNow, _ffmpegPath, arguments);
+            _logger.LogInformation("Executing {FunctionName} at {DateTime}", nameof(ConvertToWavAsync), DateTime.UtcNow);
 
             await RunProcessAsync(_ffmpegPath, arguments);
 
