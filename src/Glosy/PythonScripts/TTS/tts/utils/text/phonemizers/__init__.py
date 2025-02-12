@@ -1,7 +1,7 @@
 from TTS.tts.utils.text.phonemizers.base import BasePhonemizer
 from TTS.tts.utils.text.phonemizers.belarusian_phonemizer import BEL_Phonemizer
 from TTS.tts.utils.text.phonemizers.espeak_wrapper import ESpeak
-from TTS.tts.utils.text.phonemizers.gruut_wrapper import Gruut
+# from TTS.tts.utils.text.phonemizers.gruut_wrapper import Gruut
 
 try:
     from TTS.tts.utils.text.phonemizers.bangla_phonemizer import BN_Phonemizer
@@ -23,18 +23,18 @@ try:
 except ImportError:
     ZH_CN_Phonemizer = None
 
-PHONEMIZERS = {b.name(): b for b in (ESpeak, Gruut)}
+PHONEMIZERS = {b.name(): b for b in (ESpeak,)}
 
 
 ESPEAK_LANGS = list(ESpeak.supported_languages().keys())
-GRUUT_LANGS = list(Gruut.supported_languages())
+# GRUUT_LANGS = list(Gruut.supported_languages())
 
 
 # Dict setting default phonemizers for each language
 # Add Gruut languages
-_ = [Gruut.name()] * len(GRUUT_LANGS)
-DEF_LANG_TO_PHONEMIZER = dict(list(zip(GRUUT_LANGS, _)))
-
+# _ = [Gruut.name()] * len(GRUUT_LANGS)
+# DEF_LANG_TO_PHONEMIZER = dict(list(zip(GRUUT_LANGS, _)))
+DEF_LANG_TO_PHONEMIZER = dict()
 
 # Add ESpeak languages and override any existing ones
 _ = [ESpeak.name()] * len(ESPEAK_LANGS)
@@ -43,7 +43,7 @@ DEF_LANG_TO_PHONEMIZER.update(_new_dict)
 
 
 # Force default for some languages
-DEF_LANG_TO_PHONEMIZER["en"] = DEF_LANG_TO_PHONEMIZER["en-us"]
+# DEF_LANG_TO_PHONEMIZER["en"] = DEF_LANG_TO_PHONEMIZER["en-us"]
 DEF_LANG_TO_PHONEMIZER["be"] = BEL_Phonemizer.name()
 
 
@@ -73,8 +73,8 @@ def get_phonemizer_by_name(name: str, **kwargs) -> BasePhonemizer:
     """
     if name == "espeak":
         return ESpeak(**kwargs)
-    if name == "gruut":
-        return Gruut(**kwargs)
+    # if name == "gruut":
+    #     return Gruut(**kwargs)
     if name == "zh_cn_phonemizer":
         if ZH_CN_Phonemizer is None:
             raise ValueError("You need to install ZH phonemizer dependencies. Try `pip install coqui-tts[zh]`.")
