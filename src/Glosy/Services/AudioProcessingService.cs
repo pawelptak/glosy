@@ -194,7 +194,7 @@ namespace Glosy.Services
 
                 if (process.ExitCode != 0)
                 {
-                    _logger.LogError("{Process} error: {Output}", string.Join(',', output));
+                    _logger.LogError("{Process} error: {Output}", filePath, string.Join(',', output));
 
                     throw new OperationCanceledException($"{process.ProcessName} process exited with code {process.ExitCode}");
                 }
