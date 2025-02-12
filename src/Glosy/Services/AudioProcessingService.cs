@@ -134,10 +134,22 @@ namespace Glosy.Services
 
         private async Task SaveStreamToDrive(string outputPath, IFormFile file)
         {
-            _logger.LogInformation("Executing {FunctionName} at {DateTime}. Saving {FileName} to {Path}", nameof(SaveStreamToDrive), DateTime.UtcNow, file.FileName, outputPath);
+            _logger.LogInformation("Executing {FunctionName} at {DateTime}. Saving {FileName} ({Size}) to {Path}", nameof(SaveStreamToDrive), DateTime.UtcNow, file.FileName, file.Length, outputPath);
 
-            using var fileStream = new FileStream(outputPath, FileMode.Create);
-            await file.CopyToAsync(fileStream);
+            try
+            {
+                using var fileStream = new FileStream(outputPath, FileMode.Create);
+                await file.CopyToAsync(fileStream);
+                fileStream.Close();
+
+                bool fileExists = File.Exists(outputPath);
+                _logger.LogInformation("File {FileName} saved successfully: {Exists}", outputPath, fileExists);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error writing file to disk: {FileName}", outputPath);
+                throw;
+            }
         }
 
         private async static Task<string> RunProcessAsync(string filePath, string arguments)
