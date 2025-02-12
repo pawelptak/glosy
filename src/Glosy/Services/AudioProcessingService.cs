@@ -102,10 +102,10 @@ namespace Glosy.Services
 
                 throw;
             }
-            finally
-            {
-                ClearDirectory(_tempFilesDirectory);
-            }
+            //finally
+            //{
+            //    ClearDirectory(_tempFilesDirectory);
+            //}
 
             return result;
         }
