@@ -23,8 +23,9 @@ namespace Glosy.Services
             Directory.CreateDirectory(_tempFilesDirectory);
         }
 
-        public AudioProcessingService(IConfiguration configuration, string tempFilesDirectory, string synthesisScriptPath, string conversionScriptPath)
+        public AudioProcessingService(ILogger<AudioProcessingService> logger, IConfiguration configuration, string tempFilesDirectory, string synthesisScriptPath, string conversionScriptPath)
         {
+            _logger = logger;
             _pythonPath = configuration["Config:PythonPath"];
             _ffmpegPath = configuration["Config:FFmpegPath"];
             _synthesisScriptPath = synthesisScriptPath;

@@ -2,6 +2,7 @@ using Glosy.Models;
 using Glosy.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace Glosy.Tests
 {
@@ -32,7 +33,13 @@ namespace Glosy.Tests
                 .AddInMemoryCollection(inMemorySettings)
                 .Build();
 
-            _audioProcessingService = new AudioProcessingService(configuration, _multimediaDirectory, _synthesisScriptPath, _conversionScriptPath);
+            using var loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder.AddConsole();
+            });
+            var logger = loggerFactory.CreateLogger<AudioProcessingService>();
+
+            _audioProcessingService = new AudioProcessingService(logger, configuration, _multimediaDirectory, _synthesisScriptPath, _conversionScriptPath);
 
         }
 
