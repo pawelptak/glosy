@@ -10,9 +10,9 @@ import torch
 from torch import nn
 
 from TTS.config import load_config
-from TTS.tts.configs.vits_config import VitsConfig
+# from TTS.tts.configs.vits_config import VitsConfig
 from TTS.tts.models import setup_model as setup_tts_model
-from TTS.tts.models.vits import Vits
+# from TTS.tts.models.vits import Vits
 from TTS.tts.utils.synthesis import synthesis, transfer_voice, trim_silence
 from TTS.utils.audio import AudioProcessor
 from TTS.utils.audio.numpy_transforms import save_wav
@@ -147,18 +147,18 @@ class Synthesizer(nn.Module):
         if use_cuda:
             self.vc_model.cuda()
 
-    def _load_fairseq_from_dir(self, model_dir: str, use_cuda: bool) -> None:
-        """Load the fairseq model from a directory.
+    # def _load_fairseq_from_dir(self, model_dir: str, use_cuda: bool) -> None:
+    #     """Load the fairseq model from a directory.
 
-        We assume it is VITS and the model knows how to load itself from the directory and there is a config.json file in the directory.
-        """
-        self.tts_config = VitsConfig()
-        self.tts_model = Vits.init_from_config(self.tts_config)
-        self.tts_model.load_fairseq_checkpoint(self.tts_config, checkpoint_dir=model_dir, eval=True)
-        self.tts_config = self.tts_model.config
-        self.output_sample_rate = self.tts_config.audio["sample_rate"]
-        if use_cuda:
-            self.tts_model.cuda()
+    #     We assume it is VITS and the model knows how to load itself from the directory and there is a config.json file in the directory.
+    #     """
+    #     self.tts_config = VitsConfig()
+    #     self.tts_model = Vits.init_from_config(self.tts_config)
+    #     self.tts_model.load_fairseq_checkpoint(self.tts_config, checkpoint_dir=model_dir, eval=True)
+    #     self.tts_config = self.tts_model.config
+    #     self.output_sample_rate = self.tts_config.audio["sample_rate"]
+    #     if use_cuda:
+    #         self.tts_model.cuda()
 
     def _load_openvoice_from_dir(self, checkpoint: Path, use_cuda: bool) -> None:
         """Load the OpenVoice model from a directory.
