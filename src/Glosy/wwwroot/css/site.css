@@ -130,6 +130,8 @@ label {
 #downloadResultButton {
     width: 15%;
     color: var(--bs-body-color);
+    border: none;
+    background-color: #f1f3f4;
 }
 
     #downloadResultButton:hover {
