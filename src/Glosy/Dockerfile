@@ -3,12 +3,12 @@ WORKDIR /app
 
 # Install Python 3.11 and required dependencies
 RUN apt-get update && apt-get install -y \
-    ffmpeg
+    ffmpeg \
+    python3-pip \
+    && rm -rf /var/lib/apt/lists/*
     #python3.11 \
     #python3.11-venv \
     #python3.11-dev \
-    #python3-pip \
-    #&& rm -rf /var/lib/apt/lists/*
 
 # Set Python 3.11 as default
 #RUN ln -sf /usr/bin/python3.11 /usr/bin/python3
