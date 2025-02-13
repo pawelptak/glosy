@@ -123,6 +123,9 @@
   <data name="DownloadResultButtonLabel" xml:space="preserve">
     <value>Download</value>
   </data>
+  <data name="FileSizeExceededError" xml:space="preserve">
+    <value>File size cannot exceed {0} MB.</value>
+  </data>
   <data name="OutputFileLabel" xml:space="preserve">
     <value>Result</value>
   </data>

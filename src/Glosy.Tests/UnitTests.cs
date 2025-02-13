@@ -13,7 +13,8 @@ namespace Glosy.Tests
         private readonly string _conversionModel = "voice_conversion_models/multilingual/multi-dataset/openvoice_v2";
         private readonly string _synthesisScriptPath;
         private readonly string _conversionScriptPath;
-        private readonly string _multimediaDirectory = "Multimedia";
+        private readonly string _tempFilesDirectory = "Multimedia";
+        private readonly string _testFilesDirectory = "TestFiles";
 
         public UnitTests()
         {
@@ -39,7 +40,7 @@ namespace Glosy.Tests
             });
             var logger = loggerFactory.CreateLogger<AudioProcessingService>();
 
-            _audioProcessingService = new AudioProcessingService(logger, configuration, _multimediaDirectory, _synthesisScriptPath, _conversionScriptPath);
+            _audioProcessingService = new AudioProcessingService(logger, configuration, _tempFilesDirectory, _synthesisScriptPath, _conversionScriptPath);
 
         }
 
@@ -49,7 +50,7 @@ namespace Glosy.Tests
         {
             // Arrange
             var textPrompt = "Witaj przyjacielu.";
-            var targetFilePath = GetTestFilePath("TestFiles/zebrowski.wav");
+            var targetFilePath = GetTestProjectAbsoluteFilePath(Path.Combine(_testFilesDirectory, "zebrowski.wav"));
             var targetFile = CreateFormFileFromPath(targetFilePath);
             var model = new AudioProcessingModel { ModelName = _synthesisModel, TextPrompt = textPrompt, TargetFile = targetFile };
 
@@ -65,10 +66,10 @@ namespace Glosy.Tests
         public async Task Conversion_Output_File_Should_Have_Size_Larger_Than_Zero()
         {
             // Arrange
-            var sourceFilePath = GetTestFilePath("TestFiles/stonoga.wav");
+            var sourceFilePath = GetTestProjectAbsoluteFilePath(Path.Combine(_testFilesDirectory, "stonoga.wav"));
             var sourceFile = CreateFormFileFromPath(sourceFilePath);
 
-            var targetFilePath = GetTestFilePath("TestFiles/zebrowski.wav");
+            var targetFilePath = GetTestProjectAbsoluteFilePath(Path.Combine(_testFilesDirectory, "zebrowski.wav"));
             var targetFile = CreateFormFileFromPath(targetFilePath);
 
             var model = new AudioProcessingModel { ModelName = _conversionModel, SourceFile = sourceFile, TargetFile = targetFile };
@@ -86,7 +87,7 @@ namespace Glosy.Tests
         {
             // Arrange
             var textPrompt = "Witaj przyjacielu.";
-            var targetFilePath = GetTestFilePath("TestFiles/zebrowski.wav");
+            var targetFilePath = GetTestProjectAbsoluteFilePath(Path.Combine(_testFilesDirectory, "zebrowski.wav"));
             var targetFile = CreateFormFileFromPath(targetFilePath);
             var model = new AudioProcessingModel { ModelName = _synthesisModel, TextPrompt = textPrompt, TargetFile = targetFile };
 
@@ -94,7 +95,7 @@ namespace Glosy.Tests
             var result = await _audioProcessingService.SynthesizeVoiceAsync(model);
 
             // Assert
-            var outputFilesExist = Directory.GetFiles(_multimediaDirectory).Any(file => !file.EndsWith(".gitkeep"));
+            var outputFilesExist = Directory.GetFiles(_tempFilesDirectory).Any(file => !file.EndsWith(".gitkeep"));
             Assert.False(outputFilesExist, "Output folder is not empty.");
         }
 
@@ -102,10 +103,10 @@ namespace Glosy.Tests
         public async Task Multimedia_Folder_Should_Be_Empty_After_Conversion_Completes() // Except the .gitkeep file
         {
             // Arrange
-            var sourceFilePath = GetTestFilePath("TestFiles/stonoga.wav");
+            var sourceFilePath = GetTestProjectAbsoluteFilePath(Path.Combine(_testFilesDirectory, "stonoga.wav"));
             var sourceFile = CreateFormFileFromPath(sourceFilePath);
 
-            var targetFilePath = GetTestFilePath("TestFiles/zebrowski.wav");
+            var targetFilePath = GetTestProjectAbsoluteFilePath(Path.Combine(_testFilesDirectory, "zebrowski.wav"));
             var targetFile = CreateFormFileFromPath(targetFilePath);
 
             var model = new AudioProcessingModel { ModelName = _conversionModel, SourceFile = sourceFile, TargetFile = targetFile };
@@ -114,7 +115,7 @@ namespace Glosy.Tests
             var result = await _audioProcessingService.ConvertVoiceAsync(model);
 
             // Assert
-            var outputFilesExist = Directory.GetFiles(_multimediaDirectory).Any(file => !file.EndsWith(".gitkeep"));
+            var outputFilesExist = Directory.GetFiles(_tempFilesDirectory).Any(file => !file.EndsWith(".gitkeep"));
             Assert.False(outputFilesExist, "Output folder is not empty.");
         }
 
@@ -133,7 +134,7 @@ namespace Glosy.Tests
             };
         }
 
-        private string GetTestFilePath(string relativePath)
+        private static string GetTestProjectAbsoluteFilePath(string relativePath)
         {
             var currentDirectory = Directory.GetCurrentDirectory();
             var testProjectDirectory = Directory.GetParent(currentDirectory).Parent.Parent.FullName;
