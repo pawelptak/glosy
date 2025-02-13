@@ -9,7 +9,7 @@ namespace Glosy.Models
         public string? ModelName { get; set; }
 
         [FileSizeLimit(AudioConstants.FileSizeLimit)]
-        public IFormFile SourceFile { get; set; }
+        public IFormFile? SourceFile { get; set; }
 
         [FileSizeLimit(AudioConstants.FileSizeLimit)]
         public required IFormFile TargetFile { get; set; }

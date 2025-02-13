@@ -13,12 +13,14 @@ namespace Glosy.Services
         private readonly string _tempFilesDirectory = @"Multimedia";
         private readonly string _synthesisScriptPath = Path.Combine("PythonScripts", "synthesis.py");
         private readonly string _conversionScriptPath = Path.Combine("PythonScripts", "conversion.py");
+        private readonly string _basePath;
 
         public AudioProcessingService(ILogger<AudioProcessingService> logger, IConfiguration configuration)
         {
             _logger = logger;
             _pythonPath = configuration["Config:PythonPath"];
             _ffmpegPath = configuration["Config:FFmpegPath"];
+            _basePath = configuration["Config:BasePath"];
 
             Directory.CreateDirectory(_tempFilesDirectory);
         }
@@ -42,6 +44,11 @@ namespace Glosy.Services
 
             var outputFilePath = Path.Combine("generated", $"{Path.GetRandomFileName()}.wav"); // to show output file preview in the UI, the file path mustn't have the 'wwwroot' folder
             var fullOutputFilePath = Path.Combine("wwwroot", outputFilePath);
+
+            if (!string.IsNullOrEmpty(_basePath)) // TODO: reduce code duplicating for the lines above and below
+            {
+                outputFilePath = Path.Combine(_basePath, outputFilePath);
+            }
 
             var targetFilePath = Path.Combine(_tempFilesDirectory, model.TargetFile.FileName);
 
@@ -83,13 +90,17 @@ namespace Glosy.Services
                 var sourceFilePath = Path.Combine(_tempFilesDirectory, model.SourceFile.FileName);
                 await SaveStreamToDrive(sourceFilePath, model.SourceFile);
 
-                //await ConvertIfRecordedAsync(model.SourceFile, sourceFilePath); // Left it temporarily
-                await ConvertIfMimeTypes(model.SourceFile, sourceFilePath, [AudioConstants.Mp3MimeType]);
+                await ConvertIfMimeTypes(model.SourceFile, sourceFilePath, [AudioConstants.Mp3MimeType, AudioConstants.RecordingMimeType]);
 
                 var targetFilePath = Path.Combine(_tempFilesDirectory, model.TargetFile.FileName);
 
                 var outputFilePath = Path.Combine("generated", $"{Path.GetRandomFileName()}.wav"); // to show output file preview in the UI, the file path mustn't have the 'wwwroot' folder
                 var fullOutputFilePath = Path.Combine("wwwroot", outputFilePath);
+
+                if (!string.IsNullOrEmpty(_basePath))
+                {
+                    outputFilePath = Path.Combine(_basePath, outputFilePath);
+                }
 
                 var arguments = $"{model.ModelName} {sourceFilePath} {targetFilePath} {fullOutputFilePath}";
                 var output = await ProcessVoice(model, scriptPath, arguments, fullOutputFilePath);
