@@ -1,6 +1,6 @@
+using Glosy.Constants;
 using Glosy.Interfaces;
 using Glosy.Services;
-using Microsoft.AspNetCore.Http.Features;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +8,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddSingleton<IAudioProcessingService, AudioProcessingService>();
 builder.Services.AddLocalization();
+
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.Limits.MaxRequestBodySize = AudioConstants.FileSizeLimit;
+});
 
 var app = builder.Build();
 

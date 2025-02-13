@@ -99,8 +99,27 @@
 </div>
 
 <script>
+    document.getElementById("sourceFile").addEventListener("change", function () {
+        validateFileSize(this, @AudioConstants.FileSizeLimit);
+    });
+
+    document.getElementById("targetFile").addEventListener("change", function () {
+        validateFileSize(this, @AudioConstants.FileSizeLimit);
+    });
+
+    function validateFileSize(fileInputElement, sizeLimit){
+        const file = fileInputElement.files[0];
+        if (file && file.size > sizeLimit) {
+            const sizeLimitMb = sizeLimit/1024/1024;
+            alert(`File size cannot exceed ${sizeLimitMb} MB.`);
+            fileInputElement.value = "";
+        }
+    }
+</script>
+
+<script>
     $("#downloadResultButton").click(function() {
-        var fileUrl = $("#resultFileUrl").val();      
+        var fileUrl = $("#resultFileUrl").val();
         var url = "@Url.Action("DownloadResult", "Home")" + "?fileUrl=wwwroot/" + encodeURIComponent(fileUrl);
         window.location.href = url
     });

@@ -38,6 +38,13 @@ namespace Glosy.Controllers
         [HttpPost]
         public async Task<ActionResult> ProcessVoice(AudioProcessingModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).Distinct();
+
+                return Json(new { error = string.Join(" ", errors) ?? "OMG" });
+            }
+
             if (!string.IsNullOrWhiteSpace(model.TextPrompt))
             {
                 var synthesisResult = await _audioProcessingService.SynthesizeVoiceAsync(model);
