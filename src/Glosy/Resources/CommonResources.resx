@@ -125,7 +125,6 @@
   </data>
   <data name="FileSizeExceededError" xml:space="preserve">
     <value>File size cannot exceed {0} MB.</value>
-    <comment>Plik nie może być większy niż {0} MB.</comment>
   </data>
   <data name="OutputFileLabel" xml:space="preserve">
     <value>Result</value>
