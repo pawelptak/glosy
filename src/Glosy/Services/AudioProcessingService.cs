@@ -50,7 +50,7 @@ namespace Glosy.Services
                 outputFilePath = Path.Combine(_basePath, outputFilePath);
             }
 
-            var targetFilePath = Path.Combine(_tempFilesDirectory, model.TargetFile.FileName);
+            var targetFilePath = Path.Combine(_tempFilesDirectory, Path.GetRandomFileName());
 
             var language = "pl";
             var arguments = $"{model.ModelName} \"{model.TextPrompt}\" {targetFilePath} {language} {fullOutputFilePath}";
@@ -58,7 +58,7 @@ namespace Glosy.Services
             var result = new ProcessingResult();
             try
             {
-                var output = await ProcessVoice(model, scriptPath, arguments, fullOutputFilePath);
+                var output = await ProcessVoice(model, scriptPath, arguments, targetFilePath, fullOutputFilePath);
                 result.IsSuccessful = true;
                 result.OutputFilePath = outputFilePath;
             }
@@ -87,12 +87,12 @@ namespace Glosy.Services
             var result = new ProcessingResult();
             try
             {
-                var sourceFilePath = Path.Combine(_tempFilesDirectory, model.SourceFile.FileName);
+                var sourceFilePath = Path.Combine(_tempFilesDirectory, Path.GetRandomFileName());
                 await SaveStreamToDrive(sourceFilePath, model.SourceFile);
 
                 await ConvertIfMimeTypes(model.SourceFile, sourceFilePath, [AudioConstants.Mp3MimeType, AudioConstants.RecordingMimeType]);
 
-                var targetFilePath = Path.Combine(_tempFilesDirectory, model.TargetFile.FileName);
+                var targetFilePath = Path.Combine(_tempFilesDirectory, Path.GetRandomFileName());
 
                 var outputFilePath = Path.Combine("generated", $"{Path.GetRandomFileName()}.wav"); // to show output file preview in the UI, the file path mustn't have the 'wwwroot' folder
                 var fullOutputFilePath = Path.Combine("wwwroot", outputFilePath);
@@ -103,7 +103,7 @@ namespace Glosy.Services
                 }
 
                 var arguments = $"{model.ModelName} {sourceFilePath} {targetFilePath} {fullOutputFilePath}";
-                var output = await ProcessVoice(model, scriptPath, arguments, fullOutputFilePath);
+                var output = await ProcessVoice(model, scriptPath, arguments, targetFilePath, fullOutputFilePath);
                 result.IsSuccessful = true;
                 result.OutputFilePath = outputFilePath;
             }
@@ -131,11 +131,10 @@ namespace Glosy.Services
             }
         }
 
-        private async Task<string> ProcessVoice(AudioProcessingModel model, string scriptPath, string scriptArguments, string outputFilePath)
+        private async Task<string> ProcessVoice(AudioProcessingModel model, string scriptPath, string scriptArguments, string targetFilePath, string outputFilePath)
         {
             _logger.LogInformation("Executing {FunctionName} at {DateTime}", nameof(ProcessVoice), DateTime.UtcNow);
 
-            var targetFilePath = Path.Combine(_tempFilesDirectory, model.TargetFile.FileName);
             await SaveStreamToDrive(targetFilePath, model.TargetFile);
             await ConvertIfMimeTypes(model.TargetFile, targetFilePath, [AudioConstants.RecordingMimeType, AudioConstants.Mp3MimeType]);
 
