@@ -111,7 +111,8 @@
         const file = fileInputElement.files[0];
         if (file && file.size > sizeLimit) {
             const sizeLimitMb = sizeLimit/1024/1024;
-            alert(`File size cannot exceed ${sizeLimitMb} MB.`);
+            const errorMessage = "@Localizer.GetString("FileSizeExceededError")".replace("{0}", sizeLimitMb);
+            alert(errorMessage);
             fileInputElement.value = "";
         }
     }

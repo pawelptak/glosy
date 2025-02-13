@@ -79,6 +79,15 @@ namespace Glosy.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to File size cannot exceed {0} MB..
+        /// </summary>
+        internal static string FileSizeExceededError {
+            get {
+                return ResourceManager.GetString("FileSizeExceededError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Result.
         /// </summary>
         internal static string OutputFileLabel {
