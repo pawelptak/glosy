@@ -6,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddSingleton<IAudioProcessingService, AudioProcessingService>();
+builder.Services.AddScoped<IAudioProcessingService, AudioProcessingService>();
 builder.Services.AddLocalization();
 
 builder.WebHost.ConfigureKestrel(options =>
