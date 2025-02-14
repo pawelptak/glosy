@@ -132,6 +132,7 @@ label {
     border: none;
     background-color: #f1f3f4;
     white-space: nowrap;
+    align-content: center;
 }
 
     #downloadResultButton:hover {

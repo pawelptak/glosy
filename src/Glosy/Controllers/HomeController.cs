@@ -66,24 +66,5 @@ namespace Glosy.Controllers
 
             return Json(new { audioUrl = conversionResult.OutputFilePath });
         }
-
-        [HttpGet]
-        public async Task<ActionResult> DownloadResult(string fileUrl)
-        {
-            if (string.IsNullOrEmpty(fileUrl) || !System.IO.File.Exists(fileUrl))
-            {
-                return NotFound("File not found.");
-            }
-
-            var memory = new MemoryStream();
-            using (var stream = new FileStream(fileUrl, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                await stream.CopyToAsync(memory);
-            }
-
-            memory.Position = 0;
-
-            return File(memory, System.Net.Mime.MediaTypeNames.Application.Octet, Path.GetFileName(fileUrl));
-        }
     }
 }
