@@ -199,11 +199,4 @@ label {
         outline: none !important;
         box-shadow: none !important;
     }
-    /*    textarea:active{
-        background-color: red;
-    }
-
-    textarea:focus {
-       */ background-color: red;
-}
 }
