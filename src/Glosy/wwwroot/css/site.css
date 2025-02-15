@@ -6,6 +6,7 @@
     --light-grey: #8a8987;
     --lighter-grey: #c7c7c7;
     --red: #d44054;
+    --darkmode-lighter-black: #121212;
 }
 
 @font-face {
@@ -142,3 +143,67 @@ label {
     #downloadResultButton span {
         margin-left: 5px;
     }
+
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: black;
+        color: white;
+    }
+
+    .recording-button, .form-control, input, input[type=file]::file-selector-button {
+        background-color: var(--darkmode-lighter-black);
+        color: white;
+        border-color: var(--dark-grey);
+    }
+
+        .form-control:disabled {
+            background-color: transparent;
+        }
+
+        .form-control:focus {
+            background-color: var(--dark-grey);
+            color: white;
+        }
+
+    .btn-primary {
+        background-color: var(--darkmode-lighter-black);
+        color: white;
+    }
+
+    .logo-a img {
+        filter: invert(1);
+    }
+
+    input[type="file"]::file-selector-button:hover {
+        background-color: #81ecec;
+        border: 2px solid #00cec9;
+        color: red;
+    }
+
+    #downloadResultButton {
+        color: white;
+        background-color: var(--darkmode-lighter-black);
+    }
+
+        #downloadResultButton :hover {
+            filter: brightness(0.8);
+        }
+
+    a {
+        text-decoration: none !important;
+        position: relative;
+    }
+
+    a:focus, a:active {
+        outline: none !important;
+        box-shadow: none !important;
+    }
+    /*    textarea:active{
+        background-color: red;
+    }
+
+    textarea:focus {
+       */ background-color: red;
+}
+}
