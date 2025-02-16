@@ -80,7 +80,7 @@
                 <p>@Localizer.GetString("BusyIndicatorText")</p>
             </div>
 
-            <div id="resultContainer">
+            <div id="resultContainer" style="display: none;">
                 @Html.LabelFor(m => m.OutputFile, @Localizer.GetString("OutputFileLabel"), new { @class = "h5 mb-3" })
                 <div class="d-flex gap-2">
                     <audio id="outputAudioPreview" class="audio-preview" controls></audio>
