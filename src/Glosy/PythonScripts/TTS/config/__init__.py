@@ -45,13 +45,11 @@ def register_config(model_name: str) -> Coqpit:
         config_class = XttsConfig
     paths = ["TTS.tts.configs", "TTS.vocoder.configs", "TTS.encoder.configs", "TTS.vc.configs"]
     for path in paths:
-        try:
-            config_class = find_module(path, config_name)
-        except ModuleNotFoundError:
-            pass
+        config_class = find_module(path, config_name)
+        if config_class is not None:
+            return config_class
     if config_class is None:
         raise ModuleNotFoundError(f" [!] Config for {model_name} cannot be found.")
-    return config_class
 
 
 def _process_model_name(config_dict: dict) -> str:
