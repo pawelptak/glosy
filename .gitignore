@@ -575,6 +575,7 @@ cython_debug/
 
 # TTS model files
 src/Glosy/PythonScripts/TTS/models/tts/*/*.pth
+src/Glosy/PythonScripts/TTS/models/tts/*/*.pth.tar
 src/Glosy/PythonScripts/TTS/models/tts/*/*.pt
 src/Glosy/PythonScripts/TTS/models/tts_cache
 
