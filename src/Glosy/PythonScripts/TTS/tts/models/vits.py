@@ -38,7 +38,7 @@ from TTS.tts.utils.visual import plot_alignment
 from TTS.utils.audio.torch_transforms import spec_to_mel, wav_to_mel, wav_to_spec
 from TTS.utils.samplers import BucketBatchSampler
 from TTS.vocoder.models.hifigan_generator import HifiganGenerator
-from TTS.vocoder.utils.generic_utils import plot_results
+# from TTS.vocoder.utils.generic_utils import plot_results
 
 logger = logging.getLogger(__name__)
 
@@ -1172,7 +1172,8 @@ class Vits(BaseTTS):
     def _log(self, ap, batch, outputs, name_prefix="train"):  # pylint: disable=unused-argument,no-self-use
         y_hat = outputs[1]["model_outputs"]
         y = outputs[1]["waveform_seg"]
-        figures = plot_results(y_hat, y, ap, name_prefix)
+        # figures = plot_results(y_hat, y, ap, name_prefix)
+        figures = None
         sample_voice = y_hat[0].squeeze(0).detach().cpu().numpy()
         audios = {f"{name_prefix}/audio": sample_voice}
 

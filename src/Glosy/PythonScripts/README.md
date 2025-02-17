@@ -11,4 +11,6 @@ python synthesis.py tts_models/multilingual/multi-dataset/xtts_v2 "Witaj świeci
 - `tts_models/multilingual/multi-dataset/bark` (do not provide the language parameter)
 
 ### Conversion
-TODO
+- `voice_conversion_models/multilingual/multi-dataset/openvoice_v2`
+- `voice_conversion_models/multilingual/multi-dataset/openvoice_v1`
+- `voice_conversion_models/multilingual/vctk/freevc24`

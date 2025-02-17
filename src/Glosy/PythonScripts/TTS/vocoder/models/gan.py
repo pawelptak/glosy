@@ -14,7 +14,7 @@ from TTS.vocoder.datasets.gan_dataset import GANDataset
 from TTS.vocoder.layers.losses import DiscriminatorLoss, GeneratorLoss
 from TTS.vocoder.models import setup_discriminator, setup_generator
 from TTS.vocoder.models.base_vocoder import BaseVocoder
-from TTS.vocoder.utils.generic_utils import plot_results
+# from TTS.vocoder.utils.generic_utils import plot_results
 
 
 class GAN(BaseVocoder):
@@ -198,7 +198,8 @@ class GAN(BaseVocoder):
         """
         y_hat = outputs[0]["model_outputs"] if self.train_disc else outputs[1]["model_outputs"]
         y = batch["waveform"]
-        figures = plot_results(y_hat, y, ap, name)
+        # figures = plot_results(y_hat, y, ap, name)
+        figures = None
         sample_voice = y_hat[0].squeeze(0).detach().cpu().numpy()
         audios = {f"{name}/audio": sample_voice}
         return figures, audios

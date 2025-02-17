@@ -1,0 +1,49 @@
+{
+    "model": "hifigan",
+     "audio": {
+        "sample_rate": 16000
+    },
+    "discriminator_model": "hifigan_discriminator",
+    "generator_model": "hifigan_generator",
+    "generator_model_params": {
+        "inference_padding": 0,
+        "upsample_factors": [
+            10,
+            8,
+            2,
+            2
+        ],
+        "upsample_kernel_sizes": [
+            20,
+            16,
+            4,
+            4
+        ],
+        "upsample_initial_channel": 512,
+        "resblock_kernel_sizes": [
+            3,
+            7,
+            11
+        ],
+        "resblock_dilation_sizes": [
+            [
+                1,
+                3,
+                5
+            ],
+            [
+                1,
+                3,
+                5
+            ],
+            [
+                1,
+                3,
+                5
+            ]
+        ],
+        "resblock_type": "1",
+        "pre_linear": 1024,
+        "in_channels": 512
+    }
+}

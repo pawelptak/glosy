@@ -36,11 +36,13 @@ def to_camel(text):
 
 
 def find_module(module_path: str, module_name: str) -> object:
-    module_name = module_name.lower()
-    module = importlib.import_module(module_path + "." + module_name)
-    class_name = to_camel(module_name)
-    return getattr(module, class_name)
-
+    try:
+        module_name = module_name.lower()
+        module = importlib.import_module(module_path + "." + module_name)
+        class_name = to_camel(module_name)
+        return getattr(module, class_name)
+    except (ModuleNotFoundError):
+        return None
 
 def import_class(module_path: str) -> object:
     """Import a class from a module path.
