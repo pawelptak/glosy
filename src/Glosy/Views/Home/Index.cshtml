@@ -11,91 +11,167 @@
 <div class="container mt-5">
     <partial name="_Logo" />
 
-    @using (Html.BeginForm("ProcessVoice", "Home", FormMethod.Post, new
-    { enctype = "multipart/form-data" }))
-    {
-        <div class="d-grid gap-3">
+        @using (Html.BeginForm("ProcessVoice", "Home", FormMethod.Post, new
+        { enctype = "multipart/form-data" }))
+        {
+            <div class="mb-5" id="conversionBrainSelectionContainer">
+                <h5>
+                    <label>
+                        <b>Conversion</b> Brain
+                    </label>
+                </h5>
+                @Html.HiddenFor(m => m.SelectedConversionBrainName)
+                <div class="dropdown">
+                    <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span id="conversionBrainDropdownText">
+                            <i class="@Model.ConversionBrainItems.First().IconClass me-2"></i>@Model.ConversionBrainItems.First().Text
+                        </span>
+                    </button>
+                    <ul class="dropdown-menu" id="conversionBrainDropdownMenu">
+                        @foreach (var item in Model.ConversionBrainItems)
+                        {
+                            <li>
+                                <a class="dropdown-item dropdown-option" href="#" data-value="@item.Value" data-text="@item.Text">
+                                    <i class="@item.IconClass me-2 brain-icon"></i>
+                                    <strong>@item.Text</strong><br>
+                                    <small class="text-muted">@item.Subtitle</small>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
 
-            <div class="mb-5">
-                @Html.LabelFor(m => m.SourceFile, @Localizer.GetString("SourceFileLabel"), new { @class = "h5 mb-3" })
-                <div class="mb-3">
-                    <label>@Localizer.GetString("UploadAudioLabel")</label>
-                    <div class="input-container">
-                        <div class="input-group mb-2">
-                            @Html.TextBoxFor(m => m.SourceFile, new { type = "file", accept = ".wav, .mp3", @class = "form-control custom-file-input", id = "sourceFile" })
-                            <button id="startRecordingSource" class="btn btn-outline-secondary recording-button start-recording-button" type="button">
-                                <i class="bi bi-mic"></i>
-                                <span class="hide-on-mobile">@Localizer.GetString("StartRecordingText")</span>
-                            </button>
-                            <button id="stopRecordingSource" class="btn btn-outline-secondary recording-button stop-recording-button" style="display: none;" type="button">
-                                <i class="bi bi-stop-fill"></i>
-                                <span class="hide-on-mobile">@Localizer.GetString("StopRecordingText")</span>
-                            </button>
-                            <button class="btn btn-outline-danger clear-file-input recording-button" id="clearRecodringButton" type="button">
-                                <i class="bi bi-trash"></i>
-                            </button>
+            <div class="mb-5" id="synthesisBrainSelectionContainer" style="display: none">
+                <h5>
+                    <label>
+                        <b>Synthesis</b> Brain
+                    </label>
+                </h5>
+                @Html.HiddenFor(m => m.SelectedSynthesisBrainName)
+                <div class="dropdown">
+                    <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span id="synthesisBrainDropdownText">
+                            <i class="@Model.SynthesisBrainItems.First().IconClass me-2"></i>@Model.SynthesisBrainItems.First().Text
+                        </span>
+                    </button>
+                    <ul class="dropdown-menu" id="synthesisBrainDropdownMenu">
+                        @foreach (var item in Model.SynthesisBrainItems)
+                        {
+                            <li>
+                                <a class="dropdown-item dropdown-option" href="#" data-value="@item.Value" data-text="@item.Text">
+                                    <i class="@item.IconClass me-2 brain-icon"></i>
+                                    <strong>@item.Text</strong><br>
+                                    <small class="text-muted">@item.Subtitle</small>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+
+            <div class="d-grid gap-3">
+
+                <div class="mb-5">
+                    @Html.LabelFor(m => m.SourceFile, @Localizer.GetString("SourceFileLabel"), new { @class = "h5 mb-3" })
+                    <div class="mb-3">
+                        <label>@Localizer.GetString("UploadAudioLabel")</label>
+                        <div class="input-container">
+                            <div class="input-group mb-2">
+                                @Html.TextBoxFor(m => m.SourceFile, new { type = "file", accept = ".wav, .mp3", @class = "form-control custom-file-input", id = "sourceFile" })
+                                <button id="startRecordingSource" class="btn btn-outline-secondary recording-button start-recording-button" type="button">
+                                    <i class="bi bi-mic"></i>
+                                    <span class="hide-on-mobile">@Localizer.GetString("StartRecordingText")</span>
+                                </button>
+                                <button id="stopRecordingSource" class="btn btn-outline-secondary recording-button stop-recording-button" style="display: none;" type="button">
+                                    <i class="bi bi-stop-fill"></i>
+                                    <span class="hide-on-mobile">@Localizer.GetString("StopRecordingText")</span>
+                                </button>
+                                <button class="btn btn-outline-danger clear-file-input recording-button" id="clearRecodringButton" type="button">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                            <audio id="sourceAudioPreview" class="audio-preview" controls style="display: none;"></audio>
                         </div>
-                        <audio id="sourceAudioPreview" class="audio-preview" controls style="display: none;"></audio>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>@Localizer.GetString("TextPromptLabel")</label>
+                        @Html.TextAreaFor(m => m.TextPrompt, new { type = "file", accept = ".wav", @class = "form-control mb-3", @placeholder = @Localizer.GetString("TextPromptPlaceholder"), id = "textPromptArea" })
+                    </div>
+
+                </div>
+
+                <div>
+                    @Html.LabelFor(m => m.TargetFile, @Localizer.GetString("TargetFileLabel"), new { @class = "h5 mb-3" })
+                    <div class="mb-3">
+                        <label>@Localizer.GetString("UploadAudioLabel")</label>
+                        <div class="input-container">
+                            <div class="input-group mb-2">
+                                @Html.TextBoxFor(m => m.TargetFile, new { type = "file", required = "required", accept = ".wav, .mp3", @class = "form-control", id = "targetFile" })
+                                <button id="startRecordingTarget" class="btn btn-outline-secondary recording-button start-recording-button" type="button">
+                                    <i class="bi bi-mic"></i>
+                                    <span class="hide-on-mobile">@Localizer.GetString("StartRecordingText")</span>
+                                </button>
+                                <button id="stopRecordingTarget" class="btn btn-outline-secondary recording-button stop-recording-button" style="display: none;" type="button">
+                                    <i class="bi bi-stop-fill"></i>
+                                    <span class="hide-on-mobile">@Localizer.GetString("StopRecordingText")</span>
+                                </button>
+                                <button class="btn btn-outline-danger clear-file-input recording-button" type="button">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                            <audio id="targetAudioPreview" class="audio-preview" controls style="display: none;"></audio>
+                        </div>
                     </div>
                 </div>
 
-                <div class="mb-3">
-                    <label>@Localizer.GetString("TextPromptLabel")</label>
-                    @Html.TextAreaFor(m => m.TextPrompt, new { type = "file", accept = ".wav", @class = "form-control mb-3", @placeholder = @Localizer.GetString("TextPromptPlaceholder"), id = "textPromptArea" })
+
+                <button class="btn btn-primary mb-5" type="submit" title="@Localizer.GetString("SubmitButtonTitle")">@Localizer.GetString("SubmitButtonText")</button>
+
+                <div id="loadingIndicator" class="text-center" style="display: none;">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">@Localizer.GetString("BusyIndicatorText")</span>
+                    </div>
+                    <p>@Localizer.GetString("BusyIndicatorText")</p>
                 </div>
 
-            </div>
-
-            <div>
-                @Html.LabelFor(m => m.TargetFile, @Localizer.GetString("TargetFileLabel"), new { @class = "h5 mb-3" })
-                <div class="mb-3">
-                    <label>@Localizer.GetString("UploadAudioLabel")</label>
-                    <div class="input-container">
-                        <div class="input-group mb-2">
-                            @Html.TextBoxFor(m => m.TargetFile, new { type = "file", required = "required", accept = ".wav, .mp3", @class = "form-control", id = "targetFile" })
-                            <button id="startRecordingTarget" class="btn btn-outline-secondary recording-button start-recording-button" type="button">
-                                <i class="bi bi-mic"></i>
-                                <span class="hide-on-mobile">@Localizer.GetString("StartRecordingText")</span>
-                            </button>
-                            <button id="stopRecordingTarget" class="btn btn-outline-secondary recording-button stop-recording-button" style="display: none;" type="button">
-                                <i class="bi bi-stop-fill"></i>
-                                <span class="hide-on-mobile">@Localizer.GetString("StopRecordingText")</span>
-                            </button>
-                            <button class="btn btn-outline-danger clear-file-input recording-button" type="button">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </div>
-                        <audio id="targetAudioPreview" class="audio-preview" controls style="display: none;"></audio>
+                <div id="resultContainer" style="display: none;">
+                    @Html.LabelFor(m => m.OutputFile, @Localizer.GetString("OutputFileLabel"), new { @class = "h5 mb-3" })
+                    <div class="d-flex gap-2">
+                        <audio id="outputAudioPreview" class="audio-preview" controls></audio>
+                        <a id="downloadResultButton" download class="btn btn-outline-secondary">
+                            <i class="bi bi-download"></i>
+                            <span class="hide-on-mobile">@Localizer.GetString("DownloadResultButtonLabel")</span>
+                        </a>
                     </div>
                 </div>
+
+                <div id="errorContainer" class="text-center" style="display: none; color: red;"></div>
             </div>
-
-
-            <button class="btn btn-primary mb-5" type="submit" title="@Localizer.GetString("SubmitButtonTitle")">@Localizer.GetString("SubmitButtonText")</button>
-
-            <div id="loadingIndicator" class="text-center" style="display: none;">
-                <div class="spinner-border" role="status">
-                    <span class="visually-hidden">@Localizer.GetString("BusyIndicatorText")</span>
-                </div>
-                <p>@Localizer.GetString("BusyIndicatorText")</p>
-            </div>
-
-            <div id="resultContainer" style="display: none;">
-                @Html.LabelFor(m => m.OutputFile, @Localizer.GetString("OutputFileLabel"), new { @class = "h5 mb-3" })
-                <div class="d-flex gap-2">
-                    <audio id="outputAudioPreview" class="audio-preview" controls></audio>
-                    <a id="downloadResultButton" download class="btn btn-outline-secondary">
-                        <i class="bi bi-download"></i>
-                        <span class="hide-on-mobile">@Localizer.GetString("DownloadResultButtonLabel")</span>
-                    </a>
-                </div>
-            </div>
-
-            <div id="errorContainer" class="text-center" style="display: none; color: red;"></div>
-        </div>
-    }
+        }
 
 </div>
+
+<script>
+    function setupDropdown(dropdownSelector, textSelector, hiddenInputSelector) {
+        $(dropdownSelector).find(".dropdown-option").click(function(event) {
+            event.preventDefault();
+
+            var selectedText = $(this).data("text").trim();
+            var selectedValue = $(this).data("value");
+            var selectedIcon = $(this).find("i").attr("class");
+
+            $(textSelector).html(`<i class="${selectedIcon} me-2"></i>${selectedText}`);
+            $(hiddenInputSelector).val(selectedValue);
+        });
+    }
+
+    $(document).ready(function () {
+        setupDropdown("#conversionBrainDropdownMenu", "#conversionBrainDropdownText", "#SelectedConversionBrainName");
+        setupDropdown("#synthesisBrainDropdownMenu", "#synthesisBrainDropdownText", "#SelectedSynthesisBrainName");
+    });
+</script>
 
 <script>
     document.getElementById("sourceFile").addEventListener("change", function () {
@@ -207,9 +283,22 @@
         if (textArea.value.trim().length > 0) {
             fileInput.disabled = true;
             startRecordingButton.disabled = true;
+            toggleAudioProcessingMode(false);
         } else {
             fileInput.disabled = false;
             startRecordingButton.disabled = false;
+            toggleAudioProcessingMode(true);
+        }
+    }
+
+    function toggleAudioProcessingMode(isConversionMode){
+        if (isConversionMode){
+            $("#conversionBrainSelectionContainer").show();
+            $("#synthesisBrainSelectionContainer").hide();
+        }
+        else{
+            $("#conversionBrainSelectionContainer").hide();
+            $("#synthesisBrainSelectionContainer").show();
         }
     }
 

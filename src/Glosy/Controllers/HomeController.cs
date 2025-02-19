@@ -21,7 +21,9 @@ namespace Glosy.Controllers
             string version = Environment.GetEnvironmentVariable("APP_VERSION") ?? "Development";
             ViewBag.Version = version;
 
-            return View();
+            var model = new AudioProcessingModel();
+
+            return View(model);
         }
 
         public IActionResult Privacy()

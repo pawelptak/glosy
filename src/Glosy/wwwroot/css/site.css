@@ -175,6 +175,16 @@ label {
         color: white;
     }
 
+    .btn-outline-primary {
+        border-color: white;
+        color: white;
+    }
+
+        .btn-outline-primary:hover, .btn-outline-primary:focus, .btn-outline-primary:active, .btn-outline-primary.dropdown-toggle.show {
+            background-color: white;
+            color: black;
+        }
+
     .logo-a img {
         filter: invert(1);
     }
@@ -220,3 +230,6 @@ label {
         border-color: var(--dark-grey) !important;
     }
 }
+
+/*TODO: change dropdown option color on click*/
+/*TODO: test light mode*/

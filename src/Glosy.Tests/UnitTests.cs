@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Glosy.Tests
 {
-    public class UnitTests
+    public class UnitTests // TODO: Adjust unit tests to model selection code
     {
         private readonly AudioProcessingService _audioProcessingService;
         private readonly string _synthesisModel = "tts_models/multilingual/multi-dataset/xtts_v2";
@@ -52,7 +52,7 @@ namespace Glosy.Tests
             var textPrompt = "Witaj przyjacielu.";
             var targetFilePath = GetTestProjectAbsoluteFilePath(Path.Combine(_testFilesDirectory, "zebrowski.wav"));
             var targetFile = CreateFormFileFromPath(targetFilePath);
-            var model = new AudioProcessingModel { ModelName = _synthesisModel, TextPrompt = textPrompt, TargetFile = targetFile };
+            var model = new AudioProcessingModel { SpeechModel = _synthesisModel, TextPrompt = textPrompt, TargetFile = targetFile };
 
             // Act
             var result = await _audioProcessingService.SynthesizeVoiceAsync(model);
@@ -72,7 +72,7 @@ namespace Glosy.Tests
             var targetFilePath = GetTestProjectAbsoluteFilePath(Path.Combine(_testFilesDirectory, "zebrowski.wav"));
             var targetFile = CreateFormFileFromPath(targetFilePath);
 
-            var model = new AudioProcessingModel { ModelName = _conversionModel, SourceFile = sourceFile, TargetFile = targetFile };
+            var model = new AudioProcessingModel { SpeechModel = _conversionModel, SourceFile = sourceFile, TargetFile = targetFile };
 
             // Act
             var result = await _audioProcessingService.ConvertVoiceAsync(model);
@@ -89,7 +89,7 @@ namespace Glosy.Tests
             var textPrompt = "Witaj przyjacielu.";
             var targetFilePath = GetTestProjectAbsoluteFilePath(Path.Combine(_testFilesDirectory, "zebrowski.wav"));
             var targetFile = CreateFormFileFromPath(targetFilePath);
-            var model = new AudioProcessingModel { ModelName = _synthesisModel, TextPrompt = textPrompt, TargetFile = targetFile };
+            var model = new AudioProcessingModel { SpeechModel = _synthesisModel, TextPrompt = textPrompt, TargetFile = targetFile };
 
             // Act
             var result = await _audioProcessingService.SynthesizeVoiceAsync(model);
@@ -109,7 +109,7 @@ namespace Glosy.Tests
             var targetFilePath = GetTestProjectAbsoluteFilePath(Path.Combine(_testFilesDirectory, "zebrowski.wav"));
             var targetFile = CreateFormFileFromPath(targetFilePath);
 
-            var model = new AudioProcessingModel { ModelName = _conversionModel, SourceFile = sourceFile, TargetFile = targetFile };
+            var model = new AudioProcessingModel { SpeechModel = _conversionModel, SourceFile = sourceFile, TargetFile = targetFile };
 
             // Act
             var result = await _audioProcessingService.ConvertVoiceAsync(model);

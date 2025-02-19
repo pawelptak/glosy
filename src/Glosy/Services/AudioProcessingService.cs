@@ -11,8 +11,8 @@ namespace Glosy.Services
         private readonly string _pythonPath;
         private readonly string _ffmpegPath;
         private readonly string _tempFilesDirectory = @"Multimedia";
-        private readonly string _synthesisScriptPath = Path.Combine("PythonScripts", "synthesis.py");
-        private readonly string _conversionScriptPath = Path.Combine("PythonScripts", "conversion.py");
+        //private readonly string _synthesisScriptPath = Path.Combine("PythonScripts", "synthesis.py");
+        //private readonly string _conversionScriptPath = Path.Combine("PythonScripts", "conversion.py");
         private readonly string _basePath;
 
         public AudioProcessingService(ILogger<AudioProcessingService> logger, IConfiguration configuration)
@@ -25,13 +25,13 @@ namespace Glosy.Services
             Directory.CreateDirectory(_tempFilesDirectory);
         }
 
-        public AudioProcessingService(ILogger<AudioProcessingService> logger, IConfiguration configuration, string tempFilesDirectory, string synthesisScriptPath, string conversionScriptPath)
+        public AudioProcessingService(ILogger<AudioProcessingService> logger, IConfiguration configuration, string tempFilesDirectory)
         {
             _logger = logger;
             _pythonPath = configuration["Config:PythonPath"];
             _ffmpegPath = configuration["Config:FFmpegPath"];
-            _synthesisScriptPath = synthesisScriptPath;
-            _conversionScriptPath = conversionScriptPath;
+            //_synthesisScriptPath = synthesisScriptPath;
+            //_conversionScriptPath = conversionScriptPath;
             _tempFilesDirectory = tempFilesDirectory;
         }
 
@@ -39,8 +39,8 @@ namespace Glosy.Services
         {
             _logger.LogInformation("Executing {FunctionName} at {DateTime}. Target: {TargetFile}", nameof(SynthesizeVoiceAsync), DateTime.UtcNow, model.TargetFile.FileName);
 
-            var scriptPath = _synthesisScriptPath;
-            model.ModelName = "tts_models/multilingual/multi-dataset/xtts_v2"; // TODO: assigning it to the model may not be necessary. I leave it for now.
+            var selectedBrain = model.GetSelectedSynthesisModel();
+            var scriptPath = selectedBrain.PythonScriptPath;
 
             var outputFilePath = Path.Combine("generated", $"{Path.GetRandomFileName()}.wav"); // to show output file preview in the UI, the file path mustn't have the 'wwwroot' folder
             var fullOutputFilePath = Path.Combine("wwwroot", outputFilePath);
@@ -53,7 +53,8 @@ namespace Glosy.Services
             var targetFilePath = Path.Combine(_tempFilesDirectory, Path.GetRandomFileName());
 
             var language = "pl";
-            var arguments = $"{model.ModelName} \"{model.TextPrompt}\" {targetFilePath} {language} {fullOutputFilePath}";
+            var arguments = $"{selectedBrain.ModelPath} \"{model.TextPrompt}\" {targetFilePath} {fullOutputFilePath}";
+            arguments += selectedBrain.AddLanguageScriptArgument ? $" --language {language}" : string.Empty;
 
             var result = new ProcessingResult();
             try
@@ -81,8 +82,8 @@ namespace Glosy.Services
         {
             _logger.LogInformation("Executing {FunctionName} at {DateTime}. Source: {SourceFile}, Target: {TargetFile}", nameof(ConvertVoiceAsync), DateTime.UtcNow, model.SourceFile.FileName, model.TargetFile.FileName);
 
-            var scriptPath = _conversionScriptPath;
-            model.ModelName = "voice_conversion_models/multilingual/multi-dataset/openvoice_v2"; // TODO: assigning it to the model may not be necessary. I leave it for now.
+            var selectedBrain = model.GetSelectedConversionModel();
+            var scriptPath = selectedBrain.PythonScriptPath;
 
             var result = new ProcessingResult();
             try
@@ -102,7 +103,7 @@ namespace Glosy.Services
                     outputFilePath = Path.Combine(_basePath, outputFilePath);
                 }
 
-                var arguments = $"{model.ModelName} {sourceFilePath} {targetFilePath} {fullOutputFilePath}";
+                var arguments = $"{selectedBrain.ModelPath} {sourceFilePath} {targetFilePath} {fullOutputFilePath}";
                 var output = await ProcessVoice(model, scriptPath, arguments, targetFilePath, fullOutputFilePath);
                 result.IsSuccessful = true;
                 result.OutputFilePath = outputFilePath;
